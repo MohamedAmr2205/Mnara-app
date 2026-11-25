@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تغيير الـ PIN</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button{font-family:inherit}
+.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+@keyframes draw{from{stroke-dashoffset:60}to{stroke-dashoffset:0}}
+@keyframes ring{0%{transform:scale(.6);opacity:0}60%{transform:scale(1.08);opacity:1}100%{transform:scale(1)}}
+@keyframes shakeB{0%,100%{transform:translateX(0)}20%{transform:translateX(-10px)}40%{transform:translateX(10px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+.shake{animation:shake .4s ease}
+.shake2{animation:shakeB .4s ease}
+.check{stroke-dasharray:60;animation:draw .5s .25s ease-out both}
+.ring{animation:ring .5s cubic-bezier(.2,.8,.2,1) both}
+.key{transition:transform .1s ease,background .15s ease}
+.key:active{transform:scale(.93)}
+.back{transition:transform .12s ease}
+.back:active{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){.rise,.shake,.shake2,.check,.ring{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:22px 20px 0;display:flex;align-items:center;gap:12px">
+<a class="back" href="Settings.dc.html" aria-label="رجوع" style="flex:none;width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text);text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</a>
+<span style="font-size:20px;font-weight:700">تغيير الـ PIN</span>
+</div>
+
+<sc-if value="{{ editing }}" hint-placeholder-val="{{ true }}">
+<div style="flex:1;min-height:0;display:flex;flex-direction:column;align-items:center;padding:26px 24px 0;gap:20px">
+
+<div style="display:flex;gap:6px;width:100%">
+<sc-for list="{{ steps }}" as="s" hint-placeholder-count="3">
+<span style="flex:1;height:5px;border-radius:999px;background:{{ s.bg }}"></span>
+</sc-for>
+</div>
+
+<div style="display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center">
+<span style="font-size:22px;font-weight:700">{{ title }}</span>
+<span style="font-size:14px;color:var(--muted);font-weight:500">{{ hint }}</span>
+</div>
+
+<div class="{{ dotsClass }}" style="display:flex;gap:16px;height:24px;align-items:center">
+<sc-for list="{{ dots }}" as="d" hint-placeholder-count="4">
+<span style="width:18px;height:18px;border-radius:50%;border:2px solid {{ d.border }};background:{{ d.bg }};transition:background .12s ease"></span>
+</sc-for>
+</div>
+
+<span style="min-height:22px;font-size:14px;font-weight:700;color:var(--redtx);text-align:center">{{ error }}</span>
+
+<div style="display:grid;grid-template-columns:repeat(3,76px);gap:12px;margin-top:auto;padding-bottom:36px;direction:ltr">
+<sc-for list="{{ keys }}" as="k" hint-placeholder-count="12">
+<button class="key" onClick="{{ k.press }}" aria-label="{{ k.aria }}" disabled="{{ k.disabled }}" style="width:76px;height:76px;border-radius:50%;border:1px solid {{ k.border }};background:{{ k.bg }};color:var(--text);font-size:28px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;visibility:{{ k.vis }};opacity:{{ k.op }}">{{ k.label }}</button>
+</sc-for>
+</div>
+
+<sc-if value="{{ locked }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ resetLock }}" style="position:absolute;top:24px;left:20px;height:36px;padding:0 12px;border-radius:10px;border:1px dashed var(--line);background:transparent;color:var(--muted);font-size:11px;font-weight:600;cursor:pointer">إعادة ضبط (للتجربة بس)</button>
+</sc-if>
+
+</div>
+</sc-if>
+
+<sc-if value="{{ done }}" hint-placeholder-val="{{ false }}">
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;padding:0 28px;text-align:center">
+<div class="ring" style="width:112px;height:112px;border-radius:50%;background:var(--greenbg);border:2px solid var(--green);display:flex;align-items:center;justify-content:center">
+<svg aria-hidden="true" width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path class="check" d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+</div>
+<div class="rise" style="font-size:26px;font-weight:700">اتغيّر الـ PIN</div>
+<div class="rise" style="animation-delay:.1s;font-size:15px;color:var(--muted);font-weight:500;line-height:1.8">استخدم الـ PIN الجديد في الدخول الجاي.</div>
+<a class="rise" href="Settings.dc.html" style="animation-delay:.2s;margin-top:6px;display:flex;align-items:center;justify-content:center;width:100%;max-width:320px;height:56px;border-radius:18px;background:var(--primary);color:#fff;font-size:17px;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(23,78,166,.45)">رجوع للإعدادات</a>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { step: 0, buf: '', newPin: '', wrong: 0, error: '', shake: 0 };
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  press(d) {
+    const st = this.state;
+    const locked = st.wrong >= 5;
+    if (locked || st.step > 2) return;
+    if (d === 'del') { this.setState({ buf: st.buf.slice(0, -1), error: '' }); return; }
+    if (st.buf.length >= 4) return;
+    const buf = st.buf + d;
+    if (buf.length < 4) { this.setState({ buf, error: '' }); return; }
+    // 4 digits entered
+    if (st.step === 0) {
+      if (buf === '1234') { this.setState({ step: 1, buf: '', error: '', wrong: 0 }); return; }
+      const wrong = st.wrong + 1;
+      this.setState({ buf: '', wrong, shake: st.shake + 1, error: wrong >= 5 ? 'اتقفل بعد 5 محاولات غلط. كلّم المدرس.' : 'PIN غلط · باقي ' + (5 - wrong) + ' محاولات' });
+      return;
+    }
+    if (st.step === 1) {
+      if (buf === '1234') { this.setState({ buf: '', shake: st.shake + 1, error: 'ده نفس الـ PIN القديم. اختار واحد جديد.' }); return; }
+      this.setState({ step: 2, newPin: buf, buf: '', error: '' });
+      return;
+    }
+    if (buf === st.newPin) { this.setState({ step: 3, buf: '', error: '' }); return; }
+    this.setState({ buf: '', shake: st.shake + 1, error: 'مش زي الجديد. جرّب تاني.' });
+  }
+  renderVals() {
+    const st = this.state;
+    const locked = st.wrong >= 5;
+    const titles = ['اكتب الـ PIN الحالي', 'اكتب PIN جديد', 'أكّد الـ PIN الجديد'];
+    const hints = ['للتأكد إنك إنت (التجربة: 1234)', '4 أرقام تفتكرهم', 'اكتبه تاني'];
+    const steps = [0, 1, 2].map((i) => ({ bg: i <= st.step ? 'var(--dot)' : 'var(--line)' }));
+    const dots = [0, 1, 2, 3].map((i) => ({
+      bg: i < st.buf.length ? 'var(--dot)' : 'transparent',
+      border: locked ? 'var(--red)' : (i < st.buf.length ? 'var(--dot)' : 'var(--muted)')
+    }));
+    const layout = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '', '0', 'del'];
+    const keys = layout.map((k) => ({
+      label: k === 'del' ? '⌫' : k,
+      aria: k === 'del' ? 'مسح رقم' : k,
+      vis: k === '' ? 'hidden' : 'visible',
+      op: locked ? 0.4 : 1,
+      disabled: locked,
+      bg: k === 'del' ? 'transparent' : 'var(--card)',
+      border: k === 'del' ? 'transparent' : 'var(--line)',
+      press: () => this.press(k)
+    }));
+    return {
+      themeVars: this.themeVars(),
+      editing: st.step < 3,
+      done: st.step === 3,
+      steps,
+      title: titles[Math.min(st.step, 2)],
+      hint: hints[Math.min(st.step, 2)],
+      dots,
+      dotsClass: st.shake % 2 === 1 ? 'shake' : (st.shake > 0 ? 'shake2' : ''),
+      error: st.error,
+      keys,
+      locked,
+      resetLock: () => this.setState({ wrong: 0, error: '', buf: '' })
+    };
+  }
+}
+</script>
+</body>
+</html>

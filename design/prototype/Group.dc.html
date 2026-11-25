@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>تفاصيل المجموعة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button{font-family:inherit}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes glow{0%,100%{box-shadow:0 8px 24px rgba(23,78,166,.45)}50%{box-shadow:0 8px 32px rgba(0,212,255,.45)}}
+.cta{transition:transform .12s ease;animation:glow 3s ease-in-out infinite}
+.cta:active{transform:scale(.97)}
+.chip{transition:background .15s ease,color .15s ease}
+.back{transition:transform .12s ease}
+.back:active{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){.rise,.cta{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:16px">
+
+<div class="rise" style="display:flex;align-items:center;gap:12px">
+<a class="back" href="Groups.dc.html" aria-label="رجوع للمجاميع" style="flex:none;width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text);text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</a>
+<div style="display:flex;flex-direction:column;gap:2px;min-width:0">
+<span style="font-size:20px;font-weight:700;line-height:1.3">مجموعة لغات أولى الأربعاء 6</span>
+<span style="font-size:13px;color:var(--muted);font-weight:500">الأربعاء · 6:00 م · أولى ثانوي · لغات</span>
+</div>
+</div>
+
+<div class="rise" style="animation-delay:.06s;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px">
+<div style="padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px">
+<span style="font-size:24px;font-weight:700;line-height:1.1">42</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">طالب</span>
+</div>
+<div style="padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px">
+<span style="font-size:24px;font-weight:700;line-height:1.1">3</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">الحصة الجاية · شهر 2</span>
+</div>
+<div style="padding:12px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:2px">
+<span style="font-size:24px;font-weight:700;line-height:1.1">700</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">جنيه في الشهر</span>
+</div>
+</div>
+
+<div class="rise" style="animation-delay:.1s;display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:16px;font-weight:700">الطلبة</span>
+<div style="display:flex;gap:8px">
+<sc-for list="{{ chips }}" as="c" hint-placeholder-count="2">
+<button class="chip" onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="height:44px;padding:0 14px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font-size:13px;font-weight:600;cursor:pointer">{{ c.label }}</button>
+</sc-for>
+</div>
+</div>
+
+</div>
+
+<div style="flex:1;overflow-y:auto;padding:12px 20px 110px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ students }}" as="s" hint-placeholder-count="6">
+<div class="rise" style="animation-delay:{{ s.delay }};display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)">
+<div style="display:flex;align-items:center;gap:12px;min-width:0">
+<span style="flex:none;min-width:48px;text-align:center;padding:6px 8px;border-radius:10px;background:var(--sel);font-size:13px;font-weight:700;direction:ltr">{{ s.code }}</span>
+<span style="font-size:16px;font-weight:600">{{ s.name }}</span>
+</div>
+<sc-if value="{{ s.paid }}" hint-placeholder-val="{{ true }}">
+<span style="flex:none;padding:4px 10px;border-radius:999px;background:var(--greenbg);color:var(--greentx);font-size:12px;font-weight:700">مدفوع</span>
+</sc-if>
+<sc-if value="{{ s.unpaid }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;padding:4px 10px;border-radius:999px;background:var(--amberbg);color:var(--ambertx);font-size:12px;font-weight:700">لسه</span>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px 24px;background:linear-gradient(to top,var(--bg) 62%,transparent)">
+<a class="cta" href="StartSession.dc.html" style="display:flex;align-items:center;justify-content:center;gap:10px;height:58px;border-radius:18px;background:var(--primary);color:#fff;font-size:18px;font-weight:700;text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"></path></svg>
+ابدأ الحصة
+</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { filter: 'all' };
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    const f = this.state.filter;
+    const defs = [
+      { key: 'all', label: 'الكل' },
+      { key: 'unpaid', label: 'لسه ما دفعش' }
+    ];
+    const chips = defs.map((d) => {
+      const on = f === d.key;
+      return {
+        label: d.label,
+        on,
+        bg: on ? 'var(--primary)' : 'var(--card)',
+        fg: on ? '#fff' : 'var(--text)',
+        border: on ? 'var(--primary)' : 'var(--line)',
+        pick: () => this.setState({ filter: d.key })
+      };
+    });
+    const all = [
+      { code: 'S101', name: 'أحمد محمود', paid: true },
+      { code: 'S102', name: 'مريم خالد', paid: true },
+      { code: 'S103', name: 'يوسف عادل', paid: false },
+      { code: 'S104', name: 'نور الدين سامي', paid: true },
+      { code: 'S105', name: 'سلمى حسام', paid: false },
+      { code: 'S106', name: 'عمر طارق', paid: true },
+      { code: 'S107', name: 'هدى ماهر', paid: true },
+      { code: 'S108', name: 'كريم وائل', paid: false }
+    ];
+    const students = all
+      .filter((s) => f === 'all' || !s.paid)
+      .map((s, i) => ({ ...s, unpaid: !s.paid, delay: (0.1 + i * 0.04) + 's' }));
+    return { themeVars: this.themeVars(), chips, students };
+  }
+}
+</script>
+</body>
+</html>

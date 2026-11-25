@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>سجل الحصص</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.card{transition:transform .12s ease}
+.card:active{transform:scale(.985)}
+@media (prefers-reduced-motion:reduce){.rise{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:24px 20px 0;display:flex;flex-direction:column;gap:12px">
+<span class="rise" style="font-size:26px;font-weight:700;line-height:1.2">سجل الحصص</span>
+<div class="rise" style="animation-delay:.05s;padding:12px 14px;border-radius:14px;background:var(--card);border:1px solid var(--line);font-size:13px;color:var(--muted);font-weight:500;line-height:1.7">تقدر تعدّل أي حصة لحد <b style="color:var(--text)">10 أيام</b> من تاريخها. بعد كده بتتقفل، والتعديل يبقى من المدرس.</div>
+</div>
+
+<div style="flex:1;min-height:0;overflow-y:auto;padding:12px 20px 100px;display:flex;flex-direction:column;gap:10px">
+<sc-for list="{{ rows }}" as="r" hint-placeholder-count="4">
+<div class="rise" style="flex:none;display:flex;flex-direction:column;gap:10px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);animation-delay:{{ r.delay }}">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+<div style="display:flex;flex-direction:column;gap:3px">
+<span style="font-size:15px;font-weight:700">{{ r.group }}</span>
+<span style="font-size:13px;color:var(--muted);font-weight:500">{{ r.when }} · {{ r.num }}</span>
+</div>
+<span style="flex:none;padding:4px 10px;border-radius:999px;background:{{ r.syncBg }};color:{{ r.syncFg }};font-size:12px;font-weight:700">{{ r.sync }}</span>
+</div>
+<div style="display:flex;gap:14px;font-size:13px;color:var(--muted);font-weight:500">
+<span>حضور: <b style="color:var(--text)">{{ r.present }}</b></span>
+<span>غياب: <b style="color:var(--text)">{{ r.absent }}</b></span>
+</div>
+<sc-if value="{{ r.editable }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<span style="font-size:12px;font-weight:700;color:{{ r.leftColor }}">{{ r.left }}</span>
+<a class="card" href="Session.dc.html" style="flex:none;display:flex;align-items:center;gap:6px;height:44px;padding:0 16px;border-radius:12px;background:var(--primary);color:#fff;font-size:14px;font-weight:700;text-decoration:none">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16v4z"></path></svg>
+تعديل
+</a>
+</div>
+</sc-if>
+<sc-if value="{{ r.locked }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:12px;background:var(--card2);color:var(--muted);font-size:12px;font-weight:600">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="9" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>
+مقفولة · عدّى عليها أكتر من 10 أيام
+</div>
+</sc-if>
+</div>
+</sc-for>
+</div>
+
+<nav aria-label="التنقل الرئيسي" style="position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 10px 18px;background:var(--card);border-top:1px solid var(--line)">
+<a href="Groups.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"></path><path d="M16 5a3.2 3.2 0 0 1 0 6.2M18 14.8c2 .6 3.2 2.3 3.5 5.2"></path></svg></span>المجاميع</a>
+<a href="Search.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></span>بحث</a>
+<a href="History.dc.html" aria-current="page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--text);text-decoration:none;font-size:11px;font-weight:700"><span style="padding:4px 18px;display:flex;border-radius:999px;background:var(--sel)"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>السجل</a>
+<a href="Settings.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg></span>الإعدادات</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    const raw = [
+      { group: 'لغات أولى الأربعاء 6', when: 'الأربعاء 25/11', num: 'حصة 3 · شهر 2', ago: 0, present: 38, absent: 4, synced: false },
+      { group: 'تالتة الثلاثاء 6', when: 'الثلاثاء 24/11', num: 'حصة 3 · شهر 2', ago: 1, present: 35, absent: 3, synced: true },
+      { group: 'تالتة السبت 2', when: 'السبت 21/11', num: 'حصة 3 · شهر 2', ago: 4, present: 41, absent: 4, synced: true },
+      { group: 'لغات أولى الأربعاء 6', when: 'الأربعاء 11/11', num: 'حصة 1 · شهر 2', ago: 14, present: 40, absent: 2, synced: true }
+    ];
+    const rows = raw.map((r, i) => {
+      const left = 10 - r.ago;
+      const editable = left > 0;
+      return {
+        group: r.group, when: r.when, num: r.num, present: r.present, absent: r.absent,
+        delay: (i * 0.06) + 's',
+        editable, locked: !editable,
+        left: 'باقي ' + left + (left <= 3 ? ' أيام للتعديل' : ' أيام للتعديل'),
+        leftColor: left <= 3 ? 'var(--ambertx)' : 'var(--muted)',
+        sync: r.synced ? 'اترفعت' : 'مستنية النت',
+        syncBg: r.synced ? 'var(--greenbg)' : 'var(--amberbg)',
+        syncFg: r.synced ? 'var(--greentx)' : 'var(--ambertx)'
+      };
+    });
+    return { themeVars: this.themeVars(), rows };
+  }
+}
+</script>
+</body>
+</html>

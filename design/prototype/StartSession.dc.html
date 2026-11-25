@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>بدء الحصة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button{font-family:inherit}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes beamPulse{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes glow{0%,100%{box-shadow:0 8px 24px rgba(23,78,166,.45)}50%{box-shadow:0 8px 32px rgba(0,212,255,.45)}}
+.beam{animation:beamPulse 3.6s ease-in-out infinite}
+.cta{transition:transform .12s ease;animation:glow 3s ease-in-out infinite}
+.cta:active{transform:scale(.97)}
+.back{transition:transform .12s ease}
+.back:active{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){.rise,.beam,.cta{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<svg class="beam" aria-hidden="true" width="390" height="260" viewBox="0 0 390 260" style="position:absolute;top:0;left:0;pointer-events:none">
+<defs><linearGradient id="ssBeam" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#00D4FF" stop-opacity="0.35"></stop><stop offset="1" stop-color="#00D4FF" stop-opacity="0"></stop></linearGradient></defs>
+<polygon points="60,0 330,0 215,230 175,230" fill="url(#ssBeam)"></polygon>
+</svg>
+
+<div style="position:relative;padding:24px 20px 0;display:flex;align-items:center;gap:12px">
+<a class="back" href="Group.dc.html" aria-label="رجوع" style="flex:none;width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text);text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</a>
+<span style="font-size:20px;font-weight:700">بدء حصة جديدة</span>
+</div>
+
+<div style="position:relative;flex:1;padding:44px 20px 0;display:flex;flex-direction:column;gap:16px">
+
+<div class="rise" style="display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center">
+<span style="font-size:14px;color:var(--muted);font-weight:500">المجموعة</span>
+<span style="font-size:24px;font-weight:700;line-height:1.35">مجموعة لغات أولى الأربعاء 6</span>
+</div>
+
+<div class="rise" style="animation-delay:.08s;margin-top:8px;padding:6px 16px;border-radius:20px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column">
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)">
+<span style="font-size:14px;color:var(--muted);font-weight:500">التاريخ</span>
+<span style="font-size:16px;font-weight:700">الأربعاء 25/11/2026</span>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0;border-bottom:1px solid var(--line)">
+<span style="font-size:14px;color:var(--muted);font-weight:500">رقم الحصة</span>
+<span style="font-size:16px;font-weight:700">الحصة 3 · شهر 2</span>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:14px 0">
+<span style="font-size:14px;color:var(--muted);font-weight:500">عدد الطلبة</span>
+<span style="font-size:16px;font-weight:700">42 طالب</span>
+</div>
+</div>
+
+<div class="rise" style="animation-delay:.14s;display:flex;align-items:flex-start;gap:10px;padding:12px 14px;border-radius:16px;background:var(--amberbg);color:var(--ambertx);font-size:13px;font-weight:500;line-height:1.6">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="flex:none;margin-top:2px"><path d="M2 8.8a15 15 0 0 1 20 0M5 12.2a10 10 0 0 1 14 0M8.5 15.6a5 5 0 0 1 7 0"></path><path d="m3 3 18 18"></path></svg>
+<span>مفيش نت دلوقتي؟ كمّل عادي. الحصة هتتحفظ على موبايلك وتترفع لوحدها أول ما النت يرجع.</span>
+</div>
+
+</div>
+
+<div style="padding:16px 20px 28px">
+<a class="cta" href="Session.dc.html" style="display:flex;align-items:center;justify-content:center;gap:10px;height:60px;border-radius:18px;background:var(--primary);color:#fff;font-size:19px;font-weight:700;text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 4.5v15l12-7.5z"></path></svg>
+ابدأ الحصة دلوقتي
+</a>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    return { themeVars: this.themeVars() };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,178 @@
+{
+  "v": 3,
+  "attachments": {},
+  "boards": {
+    "ChangePin.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "13 · تغيير الـ PIN",
+      "w": 390,
+      "x": 0,
+      "y": 2892
+    },
+    "Finish.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "6 · إنهاء الحصة",
+      "w": 390,
+      "x": 470,
+      "y": 964
+    },
+    "Group.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "3 · تفاصيل المجموعة",
+      "w": 390,
+      "x": 940,
+      "y": 0
+    },
+    "Groups.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "2 · المجاميع",
+      "w": 390,
+      "x": 470,
+      "y": 0
+    },
+    "History.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "11 · سجل الحصص (تعديل 10 أيام)",
+      "w": 390,
+      "x": 940,
+      "y": 1928
+    },
+    "Main.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "1 · دخول بالـ PIN",
+      "w": 390,
+      "x": 0,
+      "y": 0
+    },
+    "NoGroups.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "14 · مفيش مجاميع",
+      "w": 390,
+      "x": 470,
+      "y": 2892
+    },
+    "Payment.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "9 · تسجيل دفعة",
+      "w": 390,
+      "x": 0,
+      "y": 1928
+    },
+    "Resume.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "15 · كمّل الحصة المفتوحة",
+      "w": 390,
+      "x": 940,
+      "y": 2892
+    },
+    "Search.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "7 · بحث عن طالب",
+      "w": 390,
+      "x": 940,
+      "y": 964
+    },
+    "Session.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "5 · الحصة: كل الطلبة في شاشة واحدة",
+      "w": 390,
+      "x": 0,
+      "y": 964
+    },
+    "Settings.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "12 · الإعدادات",
+      "w": 390,
+      "x": 1410,
+      "y": 1928
+    },
+    "StartSession.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "4 · بدء الحصة",
+      "w": 390,
+      "x": 1410,
+      "y": 0
+    },
+    "Student.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "8 · بروفايل الطالب",
+      "w": 390,
+      "x": 1410,
+      "y": 964
+    },
+    "Sync.dc.html": {
+      "h": 844,
+      "is_interactive": true,
+      "radius": 28,
+      "title": "10 · المزامنة",
+      "w": 390,
+      "x": 470,
+      "y": 1928
+    }
+  },
+  "createdOnFiles": {
+    "at": "2026-11-24T23:30:00Z",
+    "v": 1
+  },
+  "designSystems": [],
+  "launch": {
+    "view": "canvas"
+  },
+  "notes": {
+    "t1": {
+      "kind": "title1",
+      "maxW": 1800,
+      "text": "تطبيق منارة للأسيستنت · كل الشاشات",
+      "w": 240,
+      "x": 0,
+      "y": -260
+    }
+  },
+  "order": [
+    "Main.dc.html",
+    "Groups.dc.html",
+    "Group.dc.html",
+    "StartSession.dc.html",
+    "Session.dc.html",
+    "Finish.dc.html",
+    "Search.dc.html",
+    "Student.dc.html",
+    "Payment.dc.html",
+    "Sync.dc.html",
+    "History.dc.html",
+    "Settings.dc.html",
+    "ChangePin.dc.html",
+    "NoGroups.dc.html",
+    "Resume.dc.html"
+  ],
+  "pages": [],
+  "title": "تطبيق منارة للأسيستنت"
+}

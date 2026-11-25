@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>مفيش مجاميع</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes beamPulse{0%,100%{opacity:.6}50%{opacity:1}}
+.beam{animation:beamPulse 3.8s ease-in-out infinite}
+.cta{transition:transform .12s ease}
+.cta:active{transform:scale(.97)}
+@media (prefers-reduced-motion:reduce){.rise,.beam{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:14px;color:var(--muted);font-weight:500">أهلا يا أسيستنت</span>
+<span style="font-size:26px;font-weight:700;line-height:1.2">مجاميع النهارده</span>
+</div>
+
+<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:0 32px 90px;text-align:center">
+<svg class="beam" aria-hidden="true" width="64" height="112" viewBox="0 0 44 78"><defs><linearGradient id="lgNo" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#00D4FF"></stop><stop offset="1" stop-color="#00D4FF" stop-opacity="0"></stop></linearGradient></defs><polygon points="3,0 41,0 27,50 17,50" fill="url(#lgNo)"></polygon><rect x="11" y="49" width="22" height="22" rx="6" transform="rotate(45 22 60)" fill="var(--text)"></rect></svg>
+<div class="rise" style="font-size:22px;font-weight:700">لسه مفيش مجاميع عندك</div>
+<div class="rise" style="animation-delay:.08s;font-size:15px;color:var(--muted);font-weight:500;line-height:1.9">المدرس لسه ما ضافش مجاميع لحسابك، أو لسه ما اتحمّلتش على الموبايل.</div>
+<a class="cta rise" href="Sync.dc.html" style="animation-delay:.16s;margin-top:8px;display:flex;align-items:center;justify-content:center;width:100%;max-width:300px;height:56px;border-radius:18px;background:var(--primary);color:#fff;font-size:17px;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(23,78,166,.45)">حمّل المجاميع من جديد</a>
+<div class="rise" style="animation-delay:.22s;font-size:12px;color:var(--muted);font-weight:500;line-height:1.8">لو الموضوع فضل زي ما هو، كلّم المدرس يتأكد إن رقمك متسجّل.</div>
+</div>
+
+<nav aria-label="التنقل الرئيسي" style="position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 10px 18px;background:var(--card);border-top:1px solid var(--line)">
+<a href="Groups.dc.html" aria-current="page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--text);text-decoration:none;font-size:11px;font-weight:700"><span style="padding:4px 18px;display:flex;border-radius:999px;background:var(--sel)"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"></path><path d="M16 5a3.2 3.2 0 0 1 0 6.2M18 14.8c2 .6 3.2 2.3 3.5 5.2"></path></svg></span>المجاميع</a>
+<a href="Search.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></span>بحث</a>
+<a href="History.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>السجل</a>
+<a href="Settings.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg></span>الإعدادات</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    return { themeVars: this.themeVars() };
+  }
+}
+</script>
+</body>
+</html>

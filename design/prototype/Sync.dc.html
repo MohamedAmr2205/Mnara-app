@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المزامنة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button{font-family:inherit}
+.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.ping{animation:ping 2s ease-out infinite}
+.cta{transition:transform .12s ease}
+.cta:active{transform:scale(.97)}
+.back{transition:transform .12s ease}
+.back:active{transform:scale(.92)}
+@media (prefers-reduced-motion:reduce){.rise,.ping{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:22px 20px 0;display:flex;flex-direction:column;gap:14px">
+<div style="display:flex;align-items:center;gap:12px">
+<a class="back" href="Groups.dc.html" aria-label="رجوع" style="flex:none;width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text);text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</a>
+<span style="font-size:22px;font-weight:700">المزامنة</span>
+</div>
+
+<div class="rise" style="display:flex;align-items:center;gap:12px;padding:14px;border-radius:18px;background:{{ stateBg }};border:1px solid {{ stateBorder }}">
+<span style="position:relative;flex:none;width:12px;height:12px">
+<span class="ping" style="position:absolute;inset:0;border-radius:50%;background:{{ stateDot }}"></span>
+<span style="position:absolute;inset:0;border-radius:50%;background:{{ stateDot }}"></span>
+</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:16px;font-weight:700;color:{{ stateFg }}">{{ stateTitle }}</span>
+<span style="font-size:13px;color:var(--muted);font-weight:500">{{ stateSub }}</span>
+</div>
+<button onClick="{{ toggleNet }}" style="flex:none;height:44px;padding:0 14px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:12px;font-weight:700;cursor:pointer">{{ toggleLabel }}</button>
+</div>
+<span style="font-size:11px;color:var(--muted);font-weight:500">زرار التجربة ده للبروتوتايب بس، التطبيق الحقيقي بيحس بالنت لوحده.</span>
+</div>
+
+<div style="flex:1;min-height:0;overflow-y:auto;padding:12px 20px 130px;display:flex;flex-direction:column;gap:8px">
+<span style="flex:none;font-size:13px;font-weight:700;color:var(--muted)">{{ queueTitle }}</span>
+<sc-for list="{{ items }}" as="i" hint-placeholder-count="4">
+<div style="flex:none;display:flex;flex-direction:column;gap:8px;padding:12px 14px;border-radius:16px;background:var(--card);border:1px solid {{ i.border }}">
+<div style="display:flex;align-items:center;gap:10px">
+<span aria-hidden="true" style="flex:none;width:36px;height:36px;border-radius:10px;background:var(--sel);display:flex;align-items:center;justify-content:center">
+<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="{{ i.icon }}"></path></svg>
+</span>
+<div style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:14px;font-weight:700">{{ i.title }}</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">{{ i.sub }}</span>
+</div>
+<span style="flex:none;padding:4px 10px;border-radius:999px;background:{{ i.bg }};color:{{ i.fg }};font-size:12px;font-weight:700">{{ i.status }}</span>
+</div>
+<sc-if value="{{ i.failed }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;gap:10px">
+<span style="flex:1;font-size:12px;color:var(--redtx);font-weight:600;line-height:1.6">فشل الرفع: السيرفر ما ردش. بياناتك سليمة على الموبايل.</span>
+<button class="cta" onClick="{{ retry }}" style="flex:none;height:44px;padding:0 16px;border-radius:12px;border:0;background:var(--primary);color:#fff;font-size:13px;font-weight:700;cursor:pointer">حاول تاني</button>
+</div>
+</sc-if>
+</div>
+</sc-for>
+<sc-if value="{{ allDone }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:14px;border-radius:14px;background:var(--greenbg);color:var(--greentx);font-size:14px;font-weight:700;text-align:center">كل حاجة اترفعت. الداشبورد بتاع المدرس اتحدّث.</div>
+</sc-if>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px 24px;background:linear-gradient(to top,var(--bg) 62%,transparent)">
+<sc-if value="{{ canUpload }}" hint-placeholder-val="{{ true }}">
+<button class="cta" onClick="{{ upload }}" style="width:100%;height:58px;border-radius:18px;border:0;background:var(--primary);color:#fff;font-size:18px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(23,78,166,.45)">ارفع دلوقتي</button>
+</sc-if>
+<sc-if value="{{ cantUpload }}" hint-placeholder-val="{{ false }}">
+<button disabled="" style="width:100%;height:58px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:16px;font-weight:700;opacity:.8">{{ disabledText }}</button>
+</sc-if>
+</div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { online: true, uploaded: false, retried: false };
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    const st = this.state;
+    const ICON = {
+      session: 'M8 3h8l4 4v14H4V3h4zM8 12h8M8 16h5',
+      pay: 'M3 7h18v10H3zM12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0',
+      user: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21c.6-4 3.8-6 8-6s7.4 2 8 6'
+    };
+    const raw = [
+      { title: 'حصة 3 · لغات أولى الأربعاء', sub: '42 طالب · 25/11', icon: ICON.session },
+      { title: 'دفعة يوسف عادل · 300 ج', sub: 'كاش · 25/11', icon: ICON.pay },
+      { title: 'طالب جديد · S1001', sub: 'مضاف في حصة 3', icon: ICON.user },
+      { title: 'حصة الثلاثاء · تالتة', sub: '38 طالب · 24/11', icon: ICON.session, willFail: true }
+    ];
+    const items = raw.map((r) => {
+      let status; let bg; let fg; let border = 'var(--line)'; let failed = false;
+      if (!st.uploaded) {
+        status = st.online ? 'جاهز للرفع' : 'مستني النت';
+        bg = st.online ? 'var(--sel)' : 'var(--amberbg)';
+        fg = st.online ? 'var(--text)' : 'var(--ambertx)';
+      } else if (r.willFail && !st.retried) {
+        status = 'فشل'; bg = 'var(--redbg)'; fg = 'var(--redtx)'; border = 'var(--red)'; failed = true;
+      } else {
+        status = 'اترفع'; bg = 'var(--greenbg)'; fg = 'var(--greentx)';
+      }
+      return { ...r, status, bg, fg, border, failed };
+    });
+    const pending = items.filter((i) => i.status !== 'اترفع').length;
+    const hasFail = items.some((i) => i.failed);
+    const allDone = pending === 0;
+    let stateTitle; let stateSub; let stateBg; let stateBorder; let stateDot; let stateFg;
+    if (!st.online) {
+      stateTitle = 'مفيش نت'; stateSub = pending + ' مستنيين الرفع. كمّل شغلك عادي.';
+      stateBg = 'var(--amberbg)'; stateBorder = 'var(--amber)'; stateDot = 'var(--amber)'; stateFg = 'var(--ambertx)';
+    } else if (hasFail) {
+      stateTitle = 'فيه حاجة فشلت'; stateSub = 'اضغط حاول تاني على الصف الأحمر.';
+      stateBg = 'var(--redbg)'; stateBorder = 'var(--red)'; stateDot = 'var(--red)'; stateFg = 'var(--redtx)';
+    } else if (allDone) {
+      stateTitle = 'متصل · كله متزامن'; stateSub = 'آخر رفع: دلوقتي';
+      stateBg = 'var(--greenbg)'; stateBorder = 'var(--green)'; stateDot = 'var(--green)'; stateFg = 'var(--greentx)';
+    } else {
+      stateTitle = 'متصل'; stateSub = pending + ' جاهزين للرفع';
+      stateBg = 'var(--greenbg)'; stateBorder = 'var(--green)'; stateDot = 'var(--green)'; stateFg = 'var(--greentx)';
+    }
+    const canUpload = st.online && !st.uploaded;
+    return {
+      themeVars: this.themeVars(),
+      items,
+      stateTitle, stateSub, stateBg, stateBorder, stateDot, stateFg,
+      toggleLabel: st.online ? 'اقطع النت' : 'رجّع النت',
+      toggleNet: () => this.setState({ online: !st.online }),
+      queueTitle: allDone ? 'اترفع النهارده' : 'مستني الرفع (' + pending + ')',
+      allDone,
+      canUpload,
+      cantUpload: !canUpload,
+      disabledText: !st.online ? 'مستني النت عشان يرفع' : (hasFail ? 'حاول تاني على الصف الأحمر' : 'مفيش حاجة للرفع'),
+      upload: () => this.setState({ uploaded: true }),
+      retry: () => this.setState({ retried: true })
+    };
+  }
+}
+</script>
+</body>
+</html>

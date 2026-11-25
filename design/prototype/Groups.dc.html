@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>المجاميع</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button{font-family:inherit}
+.rise{animation:rise .5s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes ping{0%{transform:scale(1);opacity:.7}100%{transform:scale(2.4);opacity:0}}
+.ping{animation:ping 2s ease-out infinite}
+.card{transition:transform .14s ease,border-color .14s ease}
+.card:active{transform:scale(.98)}
+.chip{transition:background .15s ease,color .15s ease}
+@media (prefers-reduced-motion:reduce){.rise,.ping{animation:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:28px 20px 0;display:flex;flex-direction:column;gap:18px">
+
+<div class="rise" style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+<div style="display:flex;flex-direction:column;gap:2px">
+<span style="font-size:14px;color:var(--muted);font-weight:500">أهلا يا أسيستنت</span>
+<span style="font-size:26px;font-weight:700;line-height:1.2">مجاميع النهارده</span>
+</div>
+<a href="Sync.dc.html" aria-label="حالة المزامنة" style="flex:none;display:flex;align-items:center;gap:8px;min-height:44px;box-sizing:border-box;padding:0 14px;border-radius:999px;background:{{ netBg }};color:{{ netFg }};font-size:13px;font-weight:600;text-decoration:none">
+<span style="position:relative;width:8px;height:8px">
+<span class="ping" style="position:absolute;inset:0;border-radius:50%;background:{{ netDot }}"></span>
+<span style="position:absolute;inset:0;border-radius:50%;background:{{ netDot }}"></span>
+</span>
+{{ netLabel }}
+</a>
+</div>
+
+<div class="rise" style="animation-delay:.06s;display:flex;align-items:center;gap:10px;height:50px;padding:0 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);color:var(--muted)">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<span style="font-size:15px;font-weight:500">دوّر على مجموعة</span>
+</div>
+
+<div class="rise" style="animation-delay:.1s;display:flex;gap:8px">
+<sc-for list="{{ chips }}" as="c" hint-placeholder-count="4">
+<button class="chip" onClick="{{ c.pick }}" aria-pressed="{{ c.on }}" style="height:44px;padding:0 16px;border-radius:999px;border:1px solid {{ c.border }};background:{{ c.bg }};color:{{ c.fg }};font-size:14px;font-weight:600;cursor:pointer">{{ c.label }}</button>
+</sc-for>
+</div>
+
+</div>
+
+<div style="flex:1;min-height:0;overflow-y:auto;padding:16px 20px 110px;display:flex;flex-direction:column;gap:12px">
+<sc-if value="{{ offline }}" hint-placeholder-val="{{ false }}">
+<a href="Sync.dc.html" style="flex:none;display:flex;align-items:center;gap:10px;padding:12px 14px;border-radius:14px;background:var(--amberbg);color:var(--ambertx);font-size:13px;font-weight:600;line-height:1.6;text-decoration:none">
+مفيش نت. شغلك بيتحفظ على الموبايل وهيترفع لوحده أول ما النت يرجع.
+</a>
+</sc-if>
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="4">
+<a class="card rise" href="Group.dc.html" style="animation-delay:{{ g.delay }};display:flex;flex-direction:column;gap:12px;padding:16px;border-radius:20px;background:var(--card);border:1px solid {{ g.border }};text-decoration:none;color:var(--text)">
+<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px">
+<div style="display:flex;flex-direction:column;gap:4px">
+<span style="font-size:17px;font-weight:700;line-height:1.35">{{ g.name }}</span>
+<span style="font-size:14px;color:var(--muted);font-weight:500">{{ g.when }}</span>
+</div>
+<sc-if value="{{ g.today }}" hint-placeholder-val="{{ false }}">
+<span style="flex:none;padding:5px 10px;border-radius:999px;background:var(--sel);color:var(--text);font-size:12px;font-weight:700;border:1px solid var(--dot)">النهارده</span>
+</sc-if>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:13px;color:var(--muted);font-weight:500">
+<div style="display:flex;align-items:center;gap:14px">
+<span style="display:flex;align-items:center;gap:6px">
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"></path><path d="M16 5a3.2 3.2 0 0 1 0 6.2M18 14.8c2 .6 3.2 2.3 3.5 5.2"></path></svg>
+{{ g.count }} طالب
+</span>
+<span>{{ g.grade }}</span>
+</div>
+<span style="display:flex;align-items:center;gap:4px;color:var(--text);font-weight:600">
+الحصة الجاية: {{ g.next }}
+<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 5-7 7 7 7"></path></svg>
+</span>
+</div>
+</a>
+</sc-for>
+</div>
+
+<nav aria-label="التنقل الرئيسي" style="position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:8px 10px 18px;background:var(--card);border-top:1px solid var(--line)">
+<a href="Groups.dc.html" aria-current="page" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--text);text-decoration:none;font-size:11px;font-weight:700"><span style="padding:4px 18px;display:flex;border-radius:999px;background:var(--sel)"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.5"></circle><path d="M2.5 20c.6-3.4 3.2-5.5 6.5-5.5s5.9 2.1 6.5 5.5"></path><path d="M16 5a3.2 3.2 0 0 1 0 6.2M18 14.8c2 .6 3.2 2.3 3.5 5.2"></path></svg></span>المجاميع</a>
+<a href="Search.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg></span>بحث</a>
+<a href="History.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>السجل</a>
+<a href="Settings.dc.html" style="display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-height:48px;color:var(--muted);text-decoration:none;font-size:11px;font-weight:600"><span style="padding:4px 18px;display:flex"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"></path><circle cx="16" cy="7" r="2"></circle><circle cx="8" cy="17" r="2"></circle></svg></span>الإعدادات</a>
+</nav>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"},"offline":{"editor":"boolean","default":false,"section":"State"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = { year: 'all' };
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  renderVals() {
+    const sel = this.state.year;
+    const defs = [
+      { key: 'all', label: 'الكل' },
+      { key: 'first', label: 'أولى' },
+      { key: 'second', label: 'تانية' },
+      { key: 'third', label: 'تالتة' }
+    ];
+    const chips = defs.map((d) => {
+      const on = sel === d.key;
+      return {
+        label: d.label,
+        on,
+        bg: on ? 'var(--primary)' : 'var(--card)',
+        fg: on ? '#fff' : 'var(--text)',
+        border: on ? 'var(--primary)' : 'var(--line)',
+        pick: () => this.setState({ year: d.key })
+      };
+    });
+    const all = [
+      { year: 'first', name: 'مجموعة لغات أولى الأربعاء 6', when: 'الأربعاء · 6:00 م', grade: 'أولى ثانوي · لغات', count: 42, next: 'رقم 3 · شهر 2', today: true },
+      { year: 'third', name: 'مجموعة تالتة الثلاثاء 6', when: 'الثلاثاء · 6:00 م', grade: 'تالتة ثانوي · عام', count: 38, next: 'الثلاثاء الجاي', today: false },
+      { year: 'third', name: 'مجموعة تالتة السبت 2', when: 'السبت · 2:00 م', grade: 'تالتة ثانوي · عام', count: 45, next: 'السبت الجاي', today: false },
+      { year: 'second', name: 'مجموعة تانية الخميس 4', when: 'الخميس · 4:00 م', grade: 'تانية ثانوي · علمي', count: 31, next: 'الخميس الجاي', today: false }
+    ];
+    const groups = all
+      .filter((g) => sel === 'all' || g.year === sel)
+      .map((g, i) => ({
+        ...g,
+        delay: (i * 0.06) + 's',
+        border: g.today ? 'var(--dot)' : 'var(--line)'
+      }));
+    const off = !!this.props.offline;
+    return {
+      themeVars: this.themeVars(), chips, groups,
+      offline: off,
+      netLabel: off ? 'مفيش نت · 4 مستنيين' : 'متصل',
+      netBg: off ? 'var(--amberbg)' : 'var(--greenbg)',
+      netFg: off ? 'var(--ambertx)' : 'var(--greentx)',
+      netDot: off ? 'var(--amber)' : 'var(--green)'
+    };
+  }
+}
+</script>
+</body>
+</html>

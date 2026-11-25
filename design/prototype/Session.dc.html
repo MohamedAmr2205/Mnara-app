@@ -1,0 +1,622 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>الحصة</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<style>
+body{margin:0;font-family:'IBM Plex Sans Arabic',system-ui,sans-serif}
+button,input{font-family:inherit}
+.rise{animation:rise .45s cubic-bezier(.2,.8,.2,1) both}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes open{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:none}}
+.open{animation:open .22s ease-out both}
+.seg{transition:background .15s ease,color .15s ease,border-color .15s ease}
+.seg:active{transform:scale(.94)}
+.row{transition:border-color .15s ease}
+.hd:active{transform:scale(.99)}
+.bar{transition:width .35s cubic-bezier(.2,.8,.2,1)}
+.field:focus{outline:2px solid var(--dot);outline-offset:1px}
+.back{transition:transform .12s ease}
+.back:active{transform:scale(.92)}
+.cta{transition:transform .12s ease}
+.cta:active{transform:scale(.97)}
+.chev{transition:transform .2s ease}
+.sheet{animation:sheetUp .28s cubic-bezier(.2,.8,.2,1) both}
+@keyframes sheetUp{from{opacity:0;transform:translateY(40px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.rise,.open,.bar,.chev,.sheet{animation:none;transition:none}}
+</style>
+</helmet>
+<div style="width:390px;height:844px;box-sizing:border-box;position:relative;overflow:hidden;background:var(--bg);color:var(--text);font-family:'IBM Plex Sans Arabic',system-ui,sans-serif;direction:rtl;display:flex;flex-direction:column;font-variant-numeric:tabular-nums;{{themeVars}}">
+
+<div style="padding:20px 20px 0;display:flex;flex-direction:column;gap:12px">
+
+<div style="display:flex;align-items:center;gap:10px">
+<a class="back" href="StartSession.dc.html" aria-label="رجوع" style="flex:none;width:44px;height:44px;border-radius:14px;background:var(--card);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;color:var(--text);text-decoration:none">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</a>
+<div style="flex:1;display:flex;flex-direction:column;gap:1px;min-width:0">
+<span style="font-size:17px;font-weight:700;line-height:1.3">لغات أولى الأربعاء 6</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">الحصة 3 · شهر 2 · 25/11</span>
+</div>
+<div style="flex:none;display:flex;flex-direction:column;align-items:center;gap:2px" role="img" aria-label="Mnara">
+<svg aria-hidden="true" width="22" height="38" viewBox="0 0 44 78"><defs><linearGradient id="lgSes" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#00D4FF"></stop><stop offset="1" stop-color="#00D4FF" stop-opacity="0"></stop></linearGradient></defs><polygon points="3,0 41,0 27,50 17,50" fill="url(#lgSes)"></polygon><rect x="11" y="49" width="22" height="22" rx="6" transform="rotate(45 22 60)" fill="var(--text)"></rect></svg>
+<span style="font-size:11px;font-weight:700;letter-spacing:.4px;line-height:1">Mnara</span>
+</div>
+</div>
+
+<div style="padding:10px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:8px">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:6px;font-size:12px;font-weight:600">
+<span style="color:var(--greentx)">حضر {{ cPresent }}</span>
+<span style="color:var(--ambertx)">متأخر {{ cLate }}</span>
+<span style="color:var(--redtx)">غايب {{ cAbsent }}</span>
+<span style="color:var(--muted)">بعذر {{ cExcused }}</span>
+<span style="color:var(--muted)">لسه {{ cNone }}</span>
+</div>
+<div style="height:6px;border-radius:999px;background:var(--card2);overflow:hidden">
+<div class="bar" style="height:100%;width:{{ progress }}%;border-radius:999px;background:var(--dot)"></div>
+</div>
+</div>
+
+<sc-if value="{{ showTools }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 8px 8px 14px;border-radius:16px;background:var(--card);border:1px solid var(--line)">
+<label for="maxScore" style="font-size:13px;font-weight:600">درجة الامتحان الكلية</label>
+<div style="display:flex;align-items:center;gap:8px">
+<input id="maxScore" class="field" type="text" inputmode="numeric" value="{{ maxExam }}" onInput="{{ setMax }}" aria-disabled="{{ noExam }}" style="width:64px;height:44px;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:17px;font-weight:700;text-align:center;direction:ltr;opacity:{{ maxOpacity }}">
+<button onClick="{{ toggleNoExam }}" aria-pressed="{{ noExam }}" style="height:44px;padding:0 12px;border-radius:12px;border:1px solid {{ noExamBorder }};background:{{ noExamBg }};color:{{ noExamFg }};font-size:12px;font-weight:700;cursor:pointer">مفيش امتحان</button>
+</div>
+</div>
+
+<div style="display:flex;gap:8px">
+<div style="flex:1;display:flex;align-items:center;gap:8px;height:46px;padding:0 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--muted)">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input class="field" type="text" aria-label="دوّر بالكود أو الاسم" placeholder="كود أو اسم (S12)" value="{{ q }}" onInput="{{ setQ }}" style="flex:1;min-width:0;height:40px;border:0;background:transparent;color:var(--text);font-size:14px;font-weight:500">
+</div>
+<button aria-label="مسح QR" style="flex:none;width:46px;height:46px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M8 8h3v3H8zM13 13h3v3h-3zM13 8h3M8 13h3"></path></svg>
+</button>
+<button onClick="{{ allPresent }}" style="flex:none;height:46px;padding:0 12px;border-radius:14px;border:1px solid var(--green);background:var(--greenbg);color:var(--greentx);font-size:13px;font-weight:700;cursor:pointer">الكل حضر</button>
+</div>
+</sc-if>
+
+</div>
+
+<div id="list" style="flex:1;min-height:0;position:relative;overflow-y:auto;padding:12px 20px 110px;display:flex;flex-direction:column;gap:8px">
+<sc-if value="{{ showTools }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ openMenu }}" style="flex:none;display:flex;align-items:center;justify-content:center;gap:8px;height:48px;border-radius:16px;border:1.5px dashed var(--dot);background:transparent;color:var(--text);font-size:14px;font-weight:700;cursor:pointer">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"></path></svg>
+إضافة طالب (تعويض أو جديد)
+</button>
+</sc-if>
+<sc-if value="{{ noResults }}" hint-placeholder-val="{{ false }}">
+<div style="flex:none;padding:16px;border-radius:16px;background:var(--card);border:1px solid var(--line);display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center">
+<span style="font-size:14px;font-weight:600">مفيش طالب بالاسم أو الكود ده في المجموعة</span>
+<button onClick="{{ openMenu }}" style="height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--dot);background:var(--sel);color:var(--text);font-size:13px;font-weight:700;cursor:pointer">ضيفه كتعويض أو طالب جديد</button>
+</div>
+</sc-if>
+<sc-for list="{{ students }}" as="s" hint-placeholder-count="8">
+<div id="{{ s.rowId }}" class="row" style="flex:none;opacity:{{ s.dim }};border-radius:16px;background:var(--card);border:1px solid {{ s.border }};overflow:hidden">
+
+<button class="hd" onClick="{{ s.toggle }}" aria-expanded="{{ s.isOpen }}" style="width:100%;box-sizing:border-box;min-height:{{ s.minH }}px;display:flex;align-items:center;gap:10px;padding:8px 12px;border:0;background:transparent;color:var(--text);cursor:pointer;text-align:start">
+<span style="flex:none;min-width:46px;text-align:center;padding:5px 6px;border-radius:10px;background:var(--sel);font-size:12px;font-weight:700;direction:ltr">{{ s.code }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15px;font-weight:600">{{ s.name }}</span>
+<sc-if value="{{ s.hasTag }}" hint-placeholder-val="{{ false }}">
+<span style="font-size:11px;font-weight:700;color:{{ s.tagColor }}">{{ s.tagLabel }}</span>
+</sc-if>
+</span>
+<span style="flex:none;display:flex;align-items:center;gap:5px">
+<span style="padding:3px 8px;border-radius:999px;background:{{ s.attBg }};color:{{ s.attFg }};font-size:11px;font-weight:700">{{ s.attLabel }}</span>
+<sc-if value="{{ s.hasHw }}" hint-placeholder-val="{{ false }}">
+<span style="padding:3px 8px;border-radius:999px;background:var(--sel);color:var(--text);font-size:11px;font-weight:700">{{ s.hwLabel }}</span>
+</sc-if>
+<sc-if value="{{ s.hasScore }}" hint-placeholder-val="{{ false }}">
+<span style="padding:3px 8px;border-radius:999px;background:var(--sel);color:var(--text);font-size:11px;font-weight:700;direction:ltr">{{ s.scoreText }}</span>
+</sc-if>
+</span>
+<svg class="chev" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none;transform:rotate({{ s.chevRot }}deg)"><path d="m6 9 6 6 6-6"></path></svg>
+</button>
+
+<sc-if value="{{ s.isOpen }}" hint-placeholder-val="{{ false }}">
+<div class="open" style="padding:4px 12px 14px;display:flex;flex-direction:column;gap:12px;border-top:1px solid var(--line)">
+
+<div style="display:flex;flex-direction:column;gap:6px;padding-top:10px">
+<span style="font-size:12px;color:var(--muted);font-weight:600">الحضور</span>
+<div style="display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px">
+<sc-for list="{{ s.attOpts }}" as="o" hint-placeholder-count="4">
+<button class="seg" onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:44px;border-radius:12px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer">{{ o.label }}</button>
+</sc-for>
+</div>
+</div>
+
+<sc-if value="{{ s.showHw }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:6px">
+<span style="font-size:12px;color:var(--muted);font-weight:600">الواجب</span>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<sc-for list="{{ s.hwOpts }}" as="o" hint-placeholder-count="6">
+<button class="seg" onClick="{{ o.pick }}" aria-pressed="{{ o.on }}" style="height:44px;border-radius:12px;border:1px solid {{ o.border }};background:{{ o.bg }};color:{{ o.fg }};font-size:13px;font-weight:700;cursor:pointer">{{ o.label }}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ s.showExam }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<label for="{{ s.scoreId }}" style="font-size:13px;font-weight:600">درجة الامتحان</label>
+<div style="display:flex;align-items:center;gap:8px">
+<input id="{{ s.scoreId }}" class="field" type="text" inputmode="decimal" value="{{ s.scoreVal }}" onInput="{{ s.setScore }}" placeholder="--" style="width:76px;height:44px;box-sizing:border-box;border-radius:12px;border:1px solid {{ s.scoreBorder }};background:var(--card2);color:var(--text);font-size:18px;font-weight:700;text-align:center;direction:ltr">
+<span style="font-size:14px;color:var(--muted);font-weight:600;direction:ltr">/ {{ maxExam }}</span>
+</div>
+</div>
+</sc-if>
+
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="{{ s.noteId }}" style="font-size:12px;color:var(--muted);font-weight:600">ملاحظة على الطالب</label>
+<input id="{{ s.noteId }}" class="field" type="text" value="{{ s.noteVal }}" onInput="{{ s.setNote }}" placeholder="اختياري" style="height:44px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card2);color:var(--text);font-size:14px;font-weight:500">
+</div>
+
+<button class="seg" onClick="{{ s.next }}" style="height:46px;border-radius:14px;border:1px solid var(--dot);background:var(--sel);color:var(--text);font-size:14px;font-weight:700;cursor:pointer">تمام · الطالب اللي بعده</button>
+
+</div>
+</sc-if>
+
+</div>
+</sc-for>
+</div>
+
+<div style="position:absolute;left:0;right:0;bottom:0;padding:16px 20px 24px;background:linear-gradient(to top,var(--bg) 62%,transparent)">
+<a class="cta" href="Finish.dc.html" style="display:flex;align-items:center;justify-content:center;gap:10px;height:58px;border-radius:18px;background:var(--primary);color:#fff;font-size:18px;font-weight:700;text-decoration:none;box-shadow:0 8px 24px rgba(23,78,166,.45)">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12.5 4.5 4.5L19 7.5"></path></svg>
+إنهاء الحصة
+</a>
+</div>
+
+<sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="position:absolute;top:0;right:0;bottom:0;left:0;z-index:20;display:flex;flex-direction:column;justify-content:flex-end">
+<button aria-label="إغلاق" onClick="{{ closeSheet }}" style="position:absolute;top:0;right:0;bottom:0;left:0;border:0;background:rgba(3,10,26,.62);cursor:pointer"></button>
+<div class="sheet" role="dialog" aria-label="{{ sheetTitle }}" style="position:relative;max-height:90%;overflow-y:auto;box-sizing:border-box;display:flex;flex-direction:column;gap:14px;padding:12px 20px 24px;border-radius:24px 24px 0 0;background:var(--bg);border-top:1px solid var(--line);box-shadow:0 -12px 40px rgba(0,0,0,.35)">
+
+<div style="align-self:center;width:44px;height:5px;border-radius:999px;background:var(--line)"></div>
+
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<div style="display:flex;align-items:center;gap:10px">
+<sc-if value="{{ notMenu }}" hint-placeholder-val="{{ false }}">
+<button onClick="{{ backMenu }}" aria-label="رجوع" style="flex:none;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer">
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 5 7 7-7 7"></path></svg>
+</button>
+</sc-if>
+<span style="font-size:19px;font-weight:700">{{ sheetTitle }}</span>
+</div>
+<button onClick="{{ closeSheet }}" aria-label="إغلاق" style="flex:none;width:44px;height:44px;border-radius:14px;border:1px solid var(--line);background:var(--card);color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer">
+<svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6 6 18"></path></svg>
+</button>
+</div>
+
+<sc-if value="{{ isMenu }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:10px">
+<button onClick="{{ goMakeup }}" style="width:100%;box-sizing:border-box;display:flex;align-items:center;gap:14px;min-height:80px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);color:var(--text);cursor:pointer;text-align:start">
+<span style="flex:none;width:48px;height:48px;border-radius:14px;background:var(--amberbg);color:var(--ambertx);display:flex;align-items:center;justify-content:center">
+<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13l-3-3M20 16H7l3 3"></path></svg>
+</span>
+<span style="flex:1;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:16px;font-weight:700">طالب تعويض</span>
+<span style="font-size:13px;color:var(--muted);font-weight:500;line-height:1.5">جاي من مجموعة تانية يحضر الحصة دي بس</span>
+</span>
+</button>
+<button onClick="{{ goNew }}" style="width:100%;box-sizing:border-box;display:flex;align-items:center;gap:14px;min-height:80px;padding:14px;border-radius:18px;background:var(--card);border:1px solid var(--line);color:var(--text);cursor:pointer;text-align:start">
+<span style="flex:none;width:48px;height:48px;border-radius:14px;background:var(--greenbg);color:var(--greentx);display:flex;align-items:center;justify-content:center">
+<svg aria-hidden="true" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="8" r="3.5"></circle><path d="M3 20c.6-3.4 3.2-5.5 7-5.5M18 14v6M15 17h6"></path></svg>
+</span>
+<span style="flex:1;display:flex;flex-direction:column;gap:3px">
+<span style="font-size:16px;font-weight:700">طالب جديد</span>
+<span style="font-size:13px;color:var(--muted);font-weight:500;line-height:1.5">أول مرة يجي للمستر، وهيتسجّل في المجموعة دي</span>
+</span>
+</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMakeupList }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:10px;min-height:0">
+<div style="flex:none;display:flex;align-items:center;gap:8px;height:46px;padding:0 12px;border-radius:14px;background:var(--card);border:1px solid var(--line);color:var(--muted)">
+<svg aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><path d="m20 20-3.5-3.5"></path></svg>
+<input class="field" type="text" aria-label="دوّر على طالب من مجموعة تانية" placeholder="كود أو اسم الطالب" value="{{ mq }}" onInput="{{ setMq }}" style="flex:1;min-width:0;height:40px;border:0;background:transparent;color:var(--text);font-size:14px;font-weight:500">
+</div>
+<div style="overflow-y:auto;max-height:360px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ mk }}" as="m" hint-placeholder-count="4">
+<button onClick="{{ m.add }}" style="flex:none;display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;text-align:start">
+<span style="flex:none;min-width:46px;text-align:center;padding:5px 6px;border-radius:10px;background:var(--sel);font-size:12px;font-weight:700;direction:ltr">{{ m.code }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15px;font-weight:600">{{ m.name }}</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">{{ m.group }}</span>
+</span>
+<svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--dot)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex:none"><path d="M12 5v14M5 12h14"></path></svg>
+</button>
+</sc-for>
+<sc-if value="{{ noMk }}" hint-placeholder-val="{{ false }}">
+<div style="padding:16px;text-align:center;font-size:13px;color:var(--muted);font-weight:500;line-height:1.7">مفيش طالب بالاسم ده في المجموعات التانية. لو جديد على المستر اختار "طالب جديد".</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isMakeupSessions }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:10px;min-height:0">
+<div style="flex:none;display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:14px;background:var(--card);border:1px solid var(--line)">
+<span style="flex:none;min-width:46px;text-align:center;padding:5px 6px;border-radius:10px;background:var(--sel);font-size:12px;font-weight:700;direction:ltr">{{ pickCode }}</span>
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15px;font-weight:600">{{ pickName }}</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">{{ pickGroup }}</span>
+</span>
+</div>
+<span style="font-size:13px;color:var(--muted);font-weight:600">اختار الحصة اللي غابها وبيعوّضها</span>
+<div style="overflow-y:auto;max-height:320px;display:flex;flex-direction:column;gap:8px">
+<sc-for list="{{ missed }}" as="ms" hint-placeholder-count="2">
+<button onClick="{{ ms.pick }}" style="flex:none;display:flex;align-items:center;gap:10px;min-height:60px;padding:8px 12px;border-radius:16px;border:1px solid var(--line);background:var(--card);color:var(--text);cursor:pointer;text-align:start">
+<span style="flex:1;min-width:0;display:flex;flex-direction:column;gap:2px">
+<span style="font-size:15px;font-weight:600">{{ ms.label }}</span>
+<span style="font-size:12px;color:var(--muted);font-weight:500">{{ ms.date }}</span>
+</span>
+<span style="flex:none;padding:3px 10px;border-radius:999px;background:var(--redbg);color:var(--redtx);font-size:12px;font-weight:700">{{ ms.st }}</span>
+</button>
+</sc-for>
+<sc-if value="{{ noMissed }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:10px;align-items:center;padding:12px;text-align:center">
+<span style="font-size:13px;color:var(--muted);font-weight:500;line-height:1.7">مفيش غياب مسجّل للطالب ده عشان يتربط بيه.</span>
+<button onClick="{{ addNoLink }}" style="height:44px;padding:0 16px;border-radius:12px;border:1px solid var(--dot);background:var(--sel);color:var(--text);font-size:13px;font-weight:700;cursor:pointer">ضيفه من غير ربط بحصة</button>
+</div>
+</sc-if>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{ isNew }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;flex-direction:column;gap:12px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="nName" style="font-size:12px;color:var(--muted);font-weight:600">اسم الطالب</label>
+<input id="nName" class="field" type="text" placeholder="الاسم الثلاثي" value="{{ nName }}" onInput="{{ setNName }}" style="height:46px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:15px;font-weight:500">
+</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="nPhone" style="font-size:12px;color:var(--muted);font-weight:600">موبايل الطالب</label>
+<input id="nPhone" class="field" type="text" inputmode="tel" placeholder="01xxxxxxxxx" value="{{ nPhone }}" onInput="{{ setNPhone }}" style="height:46px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid {{ phoneBorder }};background:var(--card);color:var(--text);font-size:15px;font-weight:500;direction:ltr;text-align:right">
+<sc-if value="{{ phoneHas }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;line-height:1.5;color:{{ phoneColor }}">{{ phoneMsg }}</span></sc-if>
+</div>
+<div style="display:flex;flex-direction:column;gap:6px">
+<label for="nParent" style="font-size:12px;color:var(--muted);font-weight:600">موبايل ولي الأمر</label>
+<input id="nParent" class="field" type="text" inputmode="tel" placeholder="01xxxxxxxxx" value="{{ nParent }}" onInput="{{ setNParent }}" style="height:46px;box-sizing:border-box;padding:0 12px;border-radius:12px;border:1px solid {{ parBorder }};background:var(--card);color:var(--text);font-size:15px;font-weight:500;direction:ltr;text-align:right">
+<sc-if value="{{ parHas }}" hint-placeholder-val="{{ false }}"><span style="font-size:11px;font-weight:600;line-height:1.5;color:{{ parColor }}">{{ parMsg }}</span></sc-if>
+</div>
+</div>
+<div style="padding:12px 14px;border-radius:14px;background:var(--sel);font-size:13px;font-weight:500;line-height:1.7">
+كود الطالب هيتولّد تلقائي: <b style="direction:ltr;display:inline-block">{{ newCode }}</b><br>
+الرقمين مطلوبين (11 رقم لكل واحد)، عشان بوت الطالب يتأكد من هويته بآخر 4 أرقام.
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<span style="font-size:12px;color:var(--muted);font-weight:600">الدفع (لازم تأكد)</span>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<sc-for list="{{ payOpts }}" as="p" hint-placeholder-count="3">
+<button class="seg" onClick="{{ p.pick }}" aria-pressed="{{ p.on }}" style="height:44px;border-radius:12px;border:1px solid {{ p.border }};background:{{ p.bg }};color:{{ p.fg }};font-size:13px;font-weight:700;cursor:pointer">{{ p.label }}</button>
+</sc-for>
+</div>
+<sc-if value="{{ payPaid }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:10px">
+<label for="nAmount" style="font-size:13px;font-weight:600">المبلغ اللي دفعه</label>
+<div style="display:flex;align-items:center;gap:8px">
+<input id="nAmount" class="field" type="text" inputmode="numeric" value="{{ nAmount }}" onInput="{{ setNAmount }}" style="width:92px;height:44px;box-sizing:border-box;border-radius:12px;border:1px solid var(--line);background:var(--card);color:var(--text);font-size:17px;font-weight:700;text-align:center;direction:ltr">
+<span style="font-size:14px;color:var(--muted);font-weight:600">جنيه</span>
+</div>
+</div>
+<div style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px">
+<sc-for list="{{ methodOpts }}" as="m" hint-placeholder-count="3">
+<button class="seg" onClick="{{ m.pick }}" aria-pressed="{{ m.on }}" style="height:44px;border-radius:12px;border:1px solid {{ m.border }};background:{{ m.bg }};color:{{ m.fg }};font-size:12px;font-weight:700;cursor:pointer">{{ m.label }}</button>
+</sc-for>
+</div>
+</sc-if>
+</div>
+<sc-if value="{{ canAdd }}" hint-placeholder-val="{{ false }}">
+<button class="cta" onClick="{{ addNew }}" style="width:100%;display:flex;align-items:center;justify-content:center;gap:10px;height:56px;border-radius:18px;border:0;background:var(--primary);color:#fff;font-size:17px;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(23,78,166,.45)">إضافة للحصة</button>
+</sc-if>
+<sc-if value="{{ cantAdd }}" hint-placeholder-val="{{ true }}">
+<button disabled="" style="width:100%;display:flex;align-items:center;justify-content:center;height:56px;border-radius:18px;border:1px solid var(--line);background:var(--card);color:var(--muted);font-size:17px;font-weight:700;opacity:.7">إضافة للحصة</button>
+</sc-if>
+</div>
+</sc-if>
+
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"theme":{"editor":"enum","options":["dark","light"],"default":"dark","section":"Look"}}'>
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    this.state = {
+      open: 'S102',
+      q: '',
+      maxExam: '20',
+      noExam: false,
+      marks: { S101: 'present', S102: 'present', S103: 'absent', S104: 'late' },
+      hw: { S101: 'vgood' },
+      scores: { S101: '17' },
+      notes: {},
+      sheet: null,
+      mq: '',
+      nName: '',
+      nPhone: '',
+      nParent: '',
+      mkPick: null,
+      nPay: null,
+      nAmount: '',
+      nMethod: 'cash',
+      extra: []
+    };
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState && prevState.open !== this.state.open && this.state.open) {
+      const code = this.state.open;
+      setTimeout(() => {
+        try {
+          const list = document.getElementById('list');
+          const row = document.getElementById('row-' + code);
+          if (list && row) list.scrollTo({ top: Math.max(0, row.offsetTop - 6), behavior: 'smooth' });
+        } catch (e) {}
+      }, 40);
+    }
+  }
+  themeVars() {
+    const light = (this.props.theme || 'dark') === 'light';
+    return light
+      ? '--bg:#E8EFF3;--card:#FFFFFF;--card2:#F3F7FA;--text:#071A3D;--muted:#4A5B78;--line:rgba(7,26,61,.14);--primary:#174EA6;--dot:#174EA6;--mint:#12806C;--red:#C7343A;--redtx:#B02A30;--redbg:rgba(199,52,58,.12);--amber:#A15C00;--ambertx:#8A4F00;--amberbg:rgba(161,92,0,.12);--green:#1B8A63;--greentx:#146B4C;--greenbg:rgba(27,138,99,.12);--sel:rgba(23,78,166,.14);'
+      : '--bg:#071A3D;--card:#0D2A5E;--card2:#123470;--text:#E8EFF3;--muted:#A3B0C4;--line:rgba(232,239,243,.14);--primary:#174EA6;--dot:#00D4FF;--mint:#73D9C2;--red:#E5484D;--redtx:#FF8A8E;--redbg:rgba(229,72,77,.18);--amber:#FFB020;--ambertx:#FFB020;--amberbg:rgba(255,176,32,.16);--green:#2FBF8F;--greentx:#2FBF8F;--greenbg:rgba(47,191,143,.16);--sel:rgba(23,78,166,.55);';
+  }
+  put(bucket, code, v) {
+    const next = { ...this.state[bucket] };
+    next[code] = v;
+    this.setState({ [bucket]: next });
+  }
+  toggleVal(bucket, code, v) {
+    const next = { ...this.state[bucket] };
+    next[code] = next[code] === v ? undefined : v;
+    this.setState({ [bucket]: next });
+  }
+  addExtra(x) {
+    const st = this.state;
+    this.setState({
+      extra: [x, ...st.extra],
+      marks: { ...st.marks, [x.code]: 'present' },
+      sheet: null,
+      open: x.code,
+      q: '',
+      mq: '',
+      nName: '',
+      nPhone: '',
+      nParent: '',
+      mkPick: null,
+      nPay: null,
+      nAmount: '',
+      nMethod: 'cash'
+    });
+  }
+  renderVals() {
+    const st = this.state;
+    const base = [
+      ['S101', 'أحمد محمود'], ['S102', 'مريم خالد'], ['S103', 'يوسف عادل'], ['S104', 'نور الدين سامي'],
+      ['S105', 'سلمى حسام'], ['S106', 'عمر طارق'], ['S107', 'هدى ماهر'], ['S108', 'كريم وائل'],
+      ['S109', 'جنى أشرف'], ['S110', 'مصطفى رضا']
+    ];
+    const roster = [...st.extra.map((x) => [x.code, x.name]), ...base];
+    const pool = [
+      { code: 'S201', name: 'آدم سعيد', group: 'مجموعة تالتة الثلاثاء 6' },
+      { code: 'S202', name: 'ليلى حمدي', group: 'مجموعة تالتة السبت 2' },
+      { code: 'S203', name: 'ياسين عماد', group: 'مجموعة تالتة السبت 2' },
+      { code: 'S204', name: 'رنا مجدي', group: 'مجموعة تانية الخميس 4' },
+      { code: 'S205', name: 'بلال نادر', group: 'مجموعة تالتة الثلاثاء 6' }
+    ];
+    const mqv = st.mq.trim().toLowerCase();
+    const mk = pool
+      .filter((p) => !st.extra.some((x) => x.code === p.code) && (!mqv || p.code.toLowerCase().includes(mqv) || p.name.includes(st.mq.trim())))
+      .map((p) => ({ ...p, add: () => this.setState({ mkPick: p.code }) }));
+    const newCode = 'S' + (1001 + st.extra.filter((x) => x.tag === 'new').length);
+    const norm = (s) => s.replace(/[٠-٩]/g, (d) => '٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[\s\-]/g, '');
+    const chk = (s) => {
+      const n = norm(s);
+      if (!n) return { ok: false, has: false, msg: '', color: 'var(--muted)', border: 'var(--line)' };
+      if (/^01[0125]\d{8}$/.test(n)) return { ok: true, has: true, msg: 'الرقم تمام', color: 'var(--greentx)', border: 'var(--green)' };
+      return { ok: false, has: true, msg: 'لازم 11 رقم بيبدأ بـ 01 (' + n.length + ' من 11)', color: 'var(--redtx)', border: 'var(--red)' };
+    };
+    const pc = chk(st.nPhone);
+    const pp = chk(st.nParent);
+    const amt = parseFloat(st.nAmount);
+    const payOk = st.nPay === 'none' || (st.nPay !== null && isFinite(amt) && amt > 0);
+    const canAdd = st.nName.trim() !== '' && pc.ok && pp.ok && payOk;
+    const payDefs = [
+      { key: 'session', label: 'دفع حصة', amount: '175' },
+      { key: 'month', label: 'دفع شهر', amount: '700' },
+      { key: 'none', label: 'لسه ما دفعش', amount: '' }
+    ];
+    const payOpts = payDefs.map((d) => {
+      const on = st.nPay === d.key;
+      const warn = d.key === 'none';
+      return {
+        label: d.label,
+        on,
+        bg: on ? (warn ? 'var(--amberbg)' : 'var(--sel)') : 'var(--card2)',
+        fg: on ? (warn ? 'var(--ambertx)' : 'var(--text)') : 'var(--muted)',
+        border: on ? (warn ? 'var(--amber)' : 'var(--dot)') : 'var(--line)',
+        pick: () => this.setState({ nPay: d.key, nAmount: d.amount })
+      };
+    });
+    const methodDefs = [{ key: 'cash', label: 'كاش' }, { key: 'insta', label: 'إنستاباي' }, { key: 'voda', label: 'فودافون كاش' }];
+    const methodOpts = methodDefs.map((d) => {
+      const on = st.nMethod === d.key;
+      return { label: d.label, on, bg: on ? 'var(--sel)' : 'var(--card2)', fg: on ? 'var(--text)' : 'var(--muted)', border: on ? 'var(--dot)' : 'var(--line)', pick: () => this.setState({ nMethod: d.key }) };
+    });
+    const pickObj = pool.find((p) => p.code === st.mkPick) || null;
+    const absMap = {
+      S201: [{ label: 'حصة 1 · شهر 2', date: '4/11', st: 'غايب بعذر' }, { label: 'حصة 2 · شهر 2', date: '11/11', st: 'غايب' }],
+      S202: [{ label: 'حصة 2 · شهر 2', date: '15/11', st: 'غايب' }],
+      S203: [],
+      S204: [{ label: 'حصة 4 · شهر 1', date: '30/10', st: 'غايب بعذر' }, { label: 'حصة 2 · شهر 2', date: '13/11', st: 'غايب' }],
+      S205: [{ label: 'حصة 3 · شهر 2', date: '18/11', st: 'غايب' }]
+    };
+    const missedRaw = pickObj ? (absMap[pickObj.code] || []) : [];
+    const missed = missedRaw.map((m) => ({ ...m, pick: () => this.addExtra({ code: pickObj.code, name: pickObj.name, tag: 'makeup', from: pickObj.group, forSession: m.label }) }));
+    const att = [
+      { key: 'present', label: 'حضر', fg: 'var(--greentx)', bg: 'var(--greenbg)', bd: 'var(--green)' },
+      { key: 'late', label: 'متأخر', fg: 'var(--ambertx)', bg: 'var(--amberbg)', bd: 'var(--amber)' },
+      { key: 'absent', label: 'غايب', fg: 'var(--redtx)', bg: 'var(--redbg)', bd: 'var(--red)' },
+      { key: 'excused', label: 'بعذر', fg: 'var(--text)', bg: 'var(--sel)', bd: 'var(--dot)' }
+    ];
+    const hws = [
+      { key: 'excellent', label: 'ممتاز', fg: 'var(--greentx)', bg: 'var(--greenbg)', bd: 'var(--green)' },
+      { key: 'vgood', label: 'جيد جدا', fg: 'var(--greentx)', bg: 'var(--greenbg)', bd: 'var(--green)' },
+      { key: 'good', label: 'جيد', fg: 'var(--text)', bg: 'var(--sel)', bd: 'var(--dot)' },
+      { key: 'pass', label: 'مقبول', fg: 'var(--ambertx)', bg: 'var(--amberbg)', bd: 'var(--amber)' },
+      { key: 'weak', label: 'ضعيف', fg: 'var(--redtx)', bg: 'var(--redbg)', bd: 'var(--red)' },
+      { key: 'none', label: 'لم يسلم', fg: 'var(--redtx)', bg: 'var(--redbg)', bd: 'var(--red)' }
+    ];
+    const maxNum = parseFloat(st.maxExam);
+    const anyOpen = st.open !== null;
+    const q = st.q.trim().toLowerCase();
+    const count = (k) => roster.filter((r) => st.marks[r[0]] === k).length;
+    const marked = roster.filter((r) => st.marks[r[0]]).length;
+    const students = roster
+      .filter((r) => !q || r[0].toLowerCase().includes(q) || r[1].includes(st.q.trim()))
+      .map((r) => {
+        const code = r[0];
+        const cur = st.marks[code];
+        const curAtt = att.find((a) => a.key === cur);
+        const curHw = hws.find((h) => h.key === st.hw[code]);
+        const attended = cur === 'present' || cur === 'late';
+        const rawScore = st.scores[code] || '';
+        const sv = parseFloat(rawScore);
+        const overMax = isFinite(sv) && isFinite(maxNum) && sv > maxNum;
+        const open = st.open === code;
+        const ex = st.extra.find((x) => x.code === code);
+        const isNewStu = !!ex && ex.tag === 'new';
+        const idx = roster.findIndex((x) => x[0] === code);
+        const nextCode = idx < roster.length - 1 ? roster[idx + 1][0] : null;
+        return {
+          code,
+          name: r[1],
+          isOpen: open,
+          rowId: 'row-' + code,
+          hasTag: !!ex,
+          tagLabel: ex ? (ex.tag === 'makeup' ? (ex.forSession ? 'تعويض عن ' + ex.forSession : 'تعويض · ' + ex.from) : 'طالب جديد · ' + (ex.pay === 'none' ? 'لسه ما دفعش' : 'دفع ' + ex.amount + ' ج (' + (ex.pay === 'month' ? 'شهر' : 'حصة') + ')')) : '',
+          tagColor: ex ? (ex.tag === 'makeup' || ex.pay === 'none' ? 'var(--ambertx)' : 'var(--mint)') : 'var(--mint)',
+          dim: anyOpen && !open ? 0.55 : 1,
+          minH: anyOpen && !open ? 46 : 56,
+          chevRot: open ? 180 : 0,
+          border: open ? 'var(--dot)' : (curAtt ? curAtt.bd : 'var(--line)'),
+          attLabel: curAtt ? curAtt.label : 'لسه',
+          attBg: curAtt ? curAtt.bg : 'var(--card2)',
+          attFg: curAtt ? curAtt.fg : 'var(--muted)',
+          hasHw: attended && !isNewStu && !!curHw && (!anyOpen || open),
+          hwLabel: curHw ? curHw.label : '',
+          hasScore: attended && !isNewStu && !st.noExam && rawScore !== '' && (!anyOpen || open),
+          scoreText: rawScore + '/' + st.maxExam,
+          showHw: attended && !isNewStu,
+          showExam: attended && !isNewStu && !st.noExam,
+          scoreId: 'sc-' + code,
+          noteId: 'nt-' + code,
+          scoreVal: rawScore,
+          scoreBorder: overMax ? 'var(--red)' : 'var(--line)',
+          noteVal: st.notes[code] || '',
+          toggle: () => this.setState({ open: open ? null : code }),
+          next: () => this.setState({ open: nextCode }),
+          setScore: (e) => this.put('scores', code, e.target.value),
+          setNote: (e) => this.put('notes', code, e.target.value),
+          attOpts: att.map((a) => {
+            const on = cur === a.key;
+            return { label: a.label, on, bg: on ? a.bg : 'var(--card2)', fg: on ? a.fg : 'var(--muted)', border: on ? a.bd : 'var(--line)', pick: () => this.toggleVal('marks', code, a.key) };
+          }),
+          hwOpts: hws.map((h) => {
+            const on = st.hw[code] === h.key;
+            return { label: h.label, on, bg: on ? h.bg : 'var(--card2)', fg: on ? h.fg : 'var(--muted)', border: on ? h.bd : 'var(--line)', pick: () => this.toggleVal('hw', code, h.key) };
+          })
+        };
+      });
+    return {
+      themeVars: this.themeVars(),
+      students,
+      showTools: !anyOpen,
+      openMenu: () => this.setState({ sheet: 'menu' }),
+      closeSheet: () => this.setState({ sheet: null }),
+      backMenu: () => (st.sheet === 'makeup' && st.mkPick ? this.setState({ mkPick: null }) : this.setState({ sheet: 'menu' })),
+      goMakeup: () => this.setState({ sheet: 'makeup', mq: '', mkPick: null }),
+      goNew: () => this.setState({ sheet: 'new' }),
+      sheetOpen: st.sheet !== null,
+      isMenu: st.sheet === 'menu',
+      notMenu: st.sheet !== 'menu',
+      isMakeupList: st.sheet === 'makeup' && !st.mkPick,
+      isMakeupSessions: st.sheet === 'makeup' && !!st.mkPick,
+      pickCode: pickObj ? pickObj.code : '',
+      pickName: pickObj ? pickObj.name : '',
+      pickGroup: pickObj ? pickObj.group : '',
+      missed,
+      noMissed: missed.length === 0,
+      addNoLink: () => this.addExtra({ code: pickObj.code, name: pickObj.name, tag: 'makeup', from: pickObj.group, forSession: '' }),
+      isNew: st.sheet === 'new',
+      sheetTitle: st.sheet === 'makeup' ? (st.mkPick ? 'تعويض عن حصة' : 'طالب تعويض') : (st.sheet === 'new' ? 'طالب جديد' : 'إضافة طالب'),
+      noResults: students.length === 0 && q !== '',
+      mq: st.mq,
+      setMq: (e) => this.setState({ mq: e.target.value }),
+      mk,
+      noMk: mk.length === 0,
+      nName: st.nName,
+      nPhone: st.nPhone,
+      nParent: st.nParent,
+      setNName: (e) => this.setState({ nName: e.target.value }),
+      setNPhone: (e) => this.setState({ nPhone: e.target.value }),
+      setNParent: (e) => this.setState({ nParent: e.target.value }),
+      newCode,
+      phoneHas: pc.has,
+      phoneMsg: pc.msg,
+      phoneColor: pc.color,
+      phoneBorder: pc.border,
+      parHas: pp.has,
+      parMsg: pp.msg,
+      parColor: pp.color,
+      parBorder: pp.border,
+      payOpts,
+      methodOpts,
+      payPaid: st.nPay === 'session' || st.nPay === 'month',
+      nAmount: st.nAmount,
+      setNAmount: (e) => this.setState({ nAmount: e.target.value }),
+      canAdd,
+      cantAdd: !canAdd,
+      addNew: () => this.addExtra({ code: newCode, name: st.nName.trim(), tag: 'new', from: '', pay: st.nPay, amount: st.nAmount, method: st.nMethod }),
+      q: st.q,
+      setQ: (e) => this.setState({ q: e.target.value }),
+      maxExam: st.maxExam,
+      setMax: (e) => this.setState({ maxExam: e.target.value }),
+      noExam: st.noExam,
+      maxOpacity: st.noExam ? 0.4 : 1,
+      noExamBg: st.noExam ? 'var(--primary)' : 'var(--card2)',
+      noExamFg: st.noExam ? '#fff' : 'var(--muted)',
+      noExamBorder: st.noExam ? 'var(--primary)' : 'var(--line)',
+      toggleNoExam: () => this.setState({ noExam: !st.noExam }),
+      cPresent: count('present'),
+      cLate: count('late'),
+      cAbsent: count('absent'),
+      cExcused: count('excused'),
+      cNone: roster.length - marked,
+      progress: Math.round((marked / roster.length) * 100),
+      allPresent: () => {
+        const m = {};
+        roster.forEach((r) => { m[r[0]] = 'present'; });
+        this.setState({ marks: m });
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>
