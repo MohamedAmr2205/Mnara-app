@@ -28,7 +28,7 @@ void main() {
   testWidgets('defaults to the current month and pre-fills the remaining amount', (tester) async {
     await _pump(tester, _repo());
     expect(find.text('700 ج'), findsWidgets);
-    expect(find.widgetWithText(TextField, '700'), findsOneWidget);
+    expect(tester.widget<TextField>(_amountField).controller!.text, '700');
     expect(find.text('الدفعة دي هتكمّل الشهر'), findsOneWidget);
   });
 
