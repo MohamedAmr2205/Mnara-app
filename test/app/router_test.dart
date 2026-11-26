@@ -1,45 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:go_router/go_router.dart';
 
 import 'package:assistant/app/app.dart';
-import 'package:assistant/app/router.dart';
+import 'package:assistant/core/security/auth_controller.dart';
+
+import '../support/fakes.dart';
 
 void main() {
-  testWidgets('starts on the PIN lock route', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MnaraApp()));
+  testWidgets('a fresh install lands on the sign-in screen', (tester) async {
+    await tester.pumpWidget(ProviderScope(overrides: testOverrides(), child: const MnaraApp()));
     await tester.pumpAndSettle();
 
-    expect(find.text('دخول بالـ PIN'), findsOneWidget);
+    expect(find.text('تسجيل الدخول'), findsOneWidget);
     expect(find.text('المجاميع'), findsNothing);
   });
 
-  testWidgets('tabs show the bottom nav and switch branches', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MnaraApp()));
+  testWidgets('with a saved session and PIN the app opens on the PIN screen, not the groups', (tester) async {
+    final repo = FakeRepository(groups: [sampleGroup()]);
+    final gateway = FakeAuthGateway();
+    final container = ProviderContainer(overrides: testOverrides(repo: repo, gateway: gateway));
+    addTearDown(container.dispose);
+    await tester.pumpWidget(UncontrolledProviderScope(container: container, child: const MnaraApp()));
     await tester.pumpAndSettle();
 
-    final context = tester.element(find.byType(Scaffold).first);
-    GoRouter.of(context).go(AppRoutes.groups);
+    final auth = container.read(authControllerProvider.notifier);
+    await auth.signIn('a@b.com', 'secret123');
     await tester.pumpAndSettle();
-
-    expect(find.text('الشاشة دي هتتبني في M3'), findsOneWidget);
-
-    await tester.tap(find.text('بحث'));
-    await tester.pumpAndSettle();
-
-    expect(find.text('بحث عن طالب'), findsOneWidget);
-  });
-
-  testWidgets('session routes hide the bottom nav', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MnaraApp()));
-    await tester.pumpAndSettle();
-
-    final context = tester.element(find.byType(Scaffold).first);
-    GoRouter.of(context).go('/session/abc');
-    await tester.pumpAndSettle();
-
-    expect(find.text('الحصة'), findsOneWidget);
-    expect(find.text('الإعدادات'), findsNothing);
+    expect(find.text('اختار PIN جديد'), findsOneWidget);
   });
 }

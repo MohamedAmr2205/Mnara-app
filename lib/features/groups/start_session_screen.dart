@@ -11,6 +11,7 @@ import 'package:assistant/core/sync/write_service.dart';
 import 'package:assistant/core/utils/cairo_time.dart';
 import 'package:assistant/data/models/models.dart';
 import 'package:assistant/data/providers.dart';
+import 'package:assistant/domain/session_logic.dart';
 import 'package:assistant/features/shared/derived.dart';
 
 /// Confirms the date/number and creates the open session.

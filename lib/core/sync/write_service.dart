@@ -1,7 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'package:assistant/core/security/auth_controller.dart';
-import 'package:assistant/core/security/key_value_store.dart';
 import 'package:assistant/core/sync/connectivity.dart';
 import 'package:assistant/core/sync/sync_tracker.dart';
 import 'package:assistant/core/utils/cairo_time.dart';

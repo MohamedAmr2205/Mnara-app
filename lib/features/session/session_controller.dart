@@ -174,7 +174,7 @@ class SessionController extends FamilyNotifier<SessionUiState, String> {
     var next = cleared
         ? cur.copyWith(clearAttendance: true, clearHomework: true, clearExam: true)
         : cur.copyWith(attendance: a);
-    if (!cleared && !a.attended) {
+    if (!cleared && a != null && !a.attended) {
       next = next.copyWith(clearHomework: true, clearExam: true);
     }
     _put(next);

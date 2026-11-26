@@ -13,7 +13,6 @@ import 'package:assistant/core/utils/arabic_text.dart';
 import 'package:assistant/core/utils/cairo_time.dart';
 import 'package:assistant/data/models/enums.dart';
 import 'package:assistant/data/models/models.dart';
-import 'package:assistant/data/providers.dart';
 import 'package:assistant/domain/payments.dart';
 import 'package:assistant/features/shared/derived.dart';
 
@@ -138,23 +137,25 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     }
 
     void save() {
-      if (!canSave) return;
+      final value = amount;
+      final iso = dateIso;
+      if (!canSave || value == null || iso == null) return;
       FocusScope.of(context).unfocus();
       final payment = Payment(
         id: const Uuid().v4(),
         studentId: student.id,
         groupId: student.groupId,
         month: month,
-        amountEgp: amount,
+        amountEgp: value,
         method: _method,
-        paidOn: dateIso,
+        paidOn: iso,
       );
       ref.read(writeServiceProvider).addPayment(payment, student.name);
       setState(() {
         _saved = true;
         _savedPayment = payment;
-        _savedComplete = amount == pay.remaining;
-        _savedRemaining = pay.remaining - amount;
+        _savedComplete = value == pay.remaining;
+        _savedRemaining = pay.remaining - value;
       });
     }
 
