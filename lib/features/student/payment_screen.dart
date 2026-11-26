@@ -35,6 +35,7 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
   late final TextEditingController _date = TextEditingController(text: formatDmy(todayIso()));
   PayMethod _method = PayMethod.cash;
   bool _saved = false;
+  bool _prefilled = false;
   Payment? _savedPayment;
   bool _savedComplete = false;
   int _savedRemaining = 0;
@@ -68,6 +69,11 @@ class _PaymentScreenState extends ConsumerState<PaymentScreen> {
     final month = _month ?? currentMonth;
     final months = monthsToShow(currentMonth);
     final pay = ref.watch(monthPaymentProvider((studentId: student.id, month: month)));
+
+    if (!_prefilled && _month == null && pay.remaining > 0) {
+      _prefilled = true;
+      _amount.text = '${pay.remaining}';
+    }
 
     if (_saved && _savedPayment != null) {
       final p = _savedPayment!;

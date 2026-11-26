@@ -2,62 +2,119 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:assistant/app/route_placeholder.dart';
+import 'package:assistant/app/routes.dart';
 import 'package:assistant/app/tabs_scaffold.dart';
+import 'package:assistant/core/security/auth_controller.dart';
+import 'package:assistant/features/auth/pin_login_screen.dart';
+import 'package:assistant/features/auth/pin_setup_screen.dart';
+import 'package:assistant/features/auth/sign_in_screen.dart';
+import 'package:assistant/features/auth/unlock_screen.dart';
+import 'package:assistant/features/auth/warming_screen.dart';
+import 'package:assistant/features/groups/group_screen.dart';
+import 'package:assistant/features/groups/groups_screen.dart';
+import 'package:assistant/features/groups/start_session_screen.dart';
+import 'package:assistant/features/history/history_screen.dart';
+import 'package:assistant/features/search/search_screen.dart';
+import 'package:assistant/features/session/finish_screen.dart';
+import 'package:assistant/features/session/session_screen.dart';
+import 'package:assistant/features/settings/change_pin_screen.dart';
+import 'package:assistant/features/settings/settings_screen.dart';
+import 'package:assistant/features/student/payment_screen.dart';
+import 'package:assistant/features/student/student_screen.dart';
+import 'package:assistant/features/sync/sync_screen.dart';
 
-/// Route paths from the screen table (the session screens hide the nav bar).
-abstract final class AppRoutes {
-  static const String lock = '/lock';
-  static const String groups = '/groups';
-  static const String search = '/search';
-  static const String history = '/history';
-  static const String settings = '/settings';
-  static const String changePin = '/settings/pin';
-  static const String sync = '/sync';
-  static const String group = '/groups/:gid';
-  static const String startSession = '/groups/:gid/start';
-  static const String session = '/session/:xid';
-  static const String finishSession = '/session/:xid/finish';
-  static const String student = '/students/:sid';
-  static const String payment = '/students/:sid/pay';
+const _authRoutes = {
+  AppRoutes.boot,
+  AppRoutes.signIn,
+  AppRoutes.warming,
+  AppRoutes.pinSetup,
+  AppRoutes.lock,
+  AppRoutes.unlock,
+};
+
+/// Pure redirect rule, exposed for tests.
+///
+/// [returnTo] remembers where the user was when the app locked.
+String? authRedirect(AuthPhase phase, String location, {String? returnTo}) {
+  switch (phase) {
+    case AuthPhase.booting:
+      return location == AppRoutes.boot ? null : AppRoutes.boot;
+    case AuthPhase.signedOut:
+      return location == AppRoutes.signIn ? null : AppRoutes.signIn;
+    case AuthPhase.warming:
+      return location == AppRoutes.warming ? null : AppRoutes.warming;
+    case AuthPhase.needsPinSetup:
+      return location == AppRoutes.pinSetup ? null : AppRoutes.pinSetup;
+    case AuthPhase.locked:
+    case AuthPhase.lockedOut:
+      if (location == AppRoutes.lock || location == AppRoutes.unlock) return null;
+      return AppRoutes.lock;
+    case AuthPhase.unlocked:
+      if (_authRoutes.contains(location)) return returnTo ?? AppRoutes.groups;
+      return null;
+  }
 }
 
-GoRoute _route(String path, String title, String milestone) {
-  return GoRoute(
-    path: path,
-    builder: (context, state) =>
-        RoutePlaceholder(title: title, milestone: milestone),
-  );
-}
-
-StatefulShellBranch _tab(String path, String title, String milestone) {
-  return StatefulShellBranch(routes: [_route(path, title, milestone)]);
-}
-
-/// App router; auth/lock redirect guards are added in M1.
+/// App router with auth/lock guards.
 final routerProvider = Provider<GoRouter>((ref) {
+  final refresh = ValueNotifier<int>(0);
+  ref.listen<AuthState>(authControllerProvider, (previous, next) {
+    if (previous?.phase != next.phase) refresh.value++;
+  });
+  ref.onDispose(refresh.dispose);
+
+  String? returnTo;
   return GoRouter(
     navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'root'),
-    initialLocation: AppRoutes.lock,
+    initialLocation: AppRoutes.boot,
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      final phase = ref.read(authControllerProvider).phase;
+      final location = state.matchedLocation;
+      if ((phase == AuthPhase.locked || phase == AuthPhase.lockedOut) &&
+          !_authRoutes.contains(location)) {
+        returnTo = state.uri.toString();
+      }
+      final target = authRedirect(phase, location, returnTo: returnTo);
+      if (phase == AuthPhase.unlocked && target != null) returnTo = null;
+      return target;
+    },
     routes: [
-      _route(AppRoutes.lock, 'دخول بالـ PIN', 'M1'),
+      GoRoute(path: AppRoutes.boot, builder: (c, s) => const WarmingScreen(booting: true)),
+      GoRoute(path: AppRoutes.signIn, builder: (c, s) => const SignInScreen()),
+      GoRoute(path: AppRoutes.warming, builder: (c, s) => const WarmingScreen()),
+      GoRoute(path: AppRoutes.pinSetup, builder: (c, s) => const PinSetupScreen()),
+      GoRoute(path: AppRoutes.lock, builder: (c, s) => const PinLoginScreen()),
+      GoRoute(path: AppRoutes.unlock, builder: (c, s) => const UnlockScreen()),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => TabsScaffold(shell: shell),
         branches: [
-          _tab(AppRoutes.groups, 'المجاميع', 'M3'),
-          _tab(AppRoutes.search, 'بحث عن طالب', 'M4'),
-          _tab(AppRoutes.history, 'سجل الحصص', 'M5'),
-          _tab(AppRoutes.settings, 'الإعدادات', 'M5'),
+          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.groups, builder: (c, s) => const GroupsScreen())]),
+          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.search, builder: (c, s) => const SearchScreen())]),
+          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.history, builder: (c, s) => const HistoryScreen())]),
+          StatefulShellBranch(routes: [GoRoute(path: AppRoutes.settings, builder: (c, s) => const SettingsScreen())]),
         ],
       ),
-      _route(AppRoutes.group, 'تفاصيل المجموعة', 'M3'),
-      _route(AppRoutes.startSession, 'بدء حصة جديدة', 'M3'),
-      _route(AppRoutes.session, 'الحصة', 'M3'),
-      _route(AppRoutes.finishSession, 'إنهاء الحصة', 'M3'),
-      _route(AppRoutes.student, 'بروفايل الطالب', 'M4'),
-      _route(AppRoutes.payment, 'تسجيل دفعة', 'M4'),
-      _route(AppRoutes.sync, 'المزامنة', 'M5'),
-      _route(AppRoutes.changePin, 'تغيير الـ PIN', 'M1'),
+      GoRoute(path: AppRoutes.group, builder: (c, s) => GroupScreen(gid: s.pathParameters['gid']!)),
+      GoRoute(path: AppRoutes.startSession, builder: (c, s) => StartSessionScreen(gid: s.pathParameters['gid']!)),
+      GoRoute(
+        path: AppRoutes.session,
+        builder: (c, s) => SessionScreen(
+          sessionId: s.pathParameters['xid']!,
+          edit: s.uri.queryParameters['edit'] == '1',
+        ),
+      ),
+      GoRoute(
+        path: AppRoutes.finishSession,
+        builder: (c, s) => FinishScreen(
+          sessionId: s.pathParameters['xid']!,
+          edit: s.uri.queryParameters['edit'] == '1',
+        ),
+      ),
+      GoRoute(path: AppRoutes.student, builder: (c, s) => StudentScreen(sid: s.pathParameters['sid']!)),
+      GoRoute(path: AppRoutes.payment, builder: (c, s) => PaymentScreen(sid: s.pathParameters['sid']!)),
+      GoRoute(path: AppRoutes.sync, builder: (c, s) => const SyncScreen()),
+      GoRoute(path: AppRoutes.changePin, builder: (c, s) => const ChangePinScreen()),
     ],
   );
 });
