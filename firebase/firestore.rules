@@ -1,0 +1,220 @@
+rules_version = '2';
+
+// Mnara assistant app. Everything is denied unless explicitly allowed below.
+// Spark-plan safe: no Cloud Functions, all checks live in these rules.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ---------- helpers ----------
+
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    // One get() per request (rules cache repeated reads of the same path).
+    // A missing users/{uid} document makes get() fail, which denies access.
+    function profile() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data;
+    }
+
+    function isAssistantOf(tid) {
+      return signedIn() && profile().role == 'assistant' && profile().teacherId == tid;
+    }
+
+    function isStr(v, minLen, maxLen) {
+      return v is string && v.size() >= minLen && v.size() <= maxLen;
+    }
+
+    function isOptStr(d, key, maxLen) {
+      return !(key in d) || d[key] == null || isStr(d[key], 0, maxLen);
+    }
+
+    function isPhone(v) {
+      return v is string && v.matches('^01[0125][0-9]{8}$');
+    }
+
+    function isIsoDate(v) {
+      return v is string && v.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$');
+    }
+
+    function isAttendance(v) {
+      return v in ['present', 'absent', 'late', 'excused'];
+    }
+
+    function isHomework(v) {
+      return v == null || v in ['excellent', 'very_good', 'good', 'acceptable', 'weak', 'not_submitted'];
+    }
+
+    function isMethod(v) {
+      return v in ['cash', 'instapay', 'vodafone_cash'];
+    }
+
+    function isKind(v) {
+      return v in ['regular', 'makeup', 'new'];
+    }
+
+    // ---------- users ----------
+
+    match /users/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ---------- teacher ----------
+
+    match /teachers/{tid} {
+      allow read: if isAssistantOf(tid);
+
+      // Only the student-code reconciliation may write, and only to raise
+      // counters.student by at most 100 (never lower it).
+      allow update: if isAssistantOf(tid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['counters'])
+        && request.resource.data.counters.student is int
+        && request.resource.data.counters.student > resource.data.counters.student
+        && request.resource.data.counters.student - resource.data.counters.student <= 100;
+
+      allow create, delete: if false;
+
+      // ---------- groups (read only) ----------
+
+      match /groups/{gid} {
+        allow read: if isAssistantOf(tid);
+        allow write: if false;
+      }
+
+      // ---------- students ----------
+
+      match /students/{sid} {
+        function validStudent(d) {
+          return isStr(d.code, 1, 20)
+            && d.isTempCode is bool
+            && isStr(d.name, 1, 80)
+            && isPhone(d.phone)
+            && isPhone(d.parentPhone)
+            && isStr(d.groupId, 1, 80)
+            && d.status in ['active', 'inactive']
+            && isOptStr(d, 'addedInSessionId', 80);
+        }
+
+        allow read: if isAssistantOf(tid);
+        allow create: if isAssistantOf(tid)
+          && validStudent(request.resource.data)
+          && request.resource.data.createdBy == request.auth.uid;
+        allow update: if isAssistantOf(tid)
+          && validStudent(request.resource.data)
+          && request.resource.data.diff(resource.data).affectedKeys()
+              .hasOnly(['code', 'isTempCode', 'status', 'name', 'phone', 'parentPhone', 'updatedAt', 'updatedBy']);
+        allow delete: if false;
+      }
+
+      // ---------- sessions and records ----------
+
+      match /sessions/{xid} {
+        function validSession(d) {
+          return isStr(d.groupId, 1, 80)
+            && isIsoDate(d.date)
+            && d.number is int && d.number >= 1 && d.number <= 100
+            && d.monthNumber is int && d.monthNumber >= 1 && d.monthNumber <= 60
+            && d.status in ['open', 'finished']
+            && (d.maxExam == null || (d.maxExam is int && d.maxExam >= 1 && d.maxExam <= 1000))
+            && d.noExam is bool
+            && isStr(d.notes, 0, 2000)
+            && d.editableUntil is timestamp;
+        }
+
+        allow read: if isAssistantOf(tid);
+
+        // editableUntil is midnight Africa/Cairo of (session date + 10 days).
+        // Rules cannot compute Cairo dates, so creation only requires it to
+        // lie between now and 11 days ahead.
+        allow create: if isAssistantOf(tid)
+          && validSession(request.resource.data)
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.editableUntil > request.time
+          && request.resource.data.editableUntil <= request.time + duration.value(11, 'd');
+
+        allow update: if isAssistantOf(tid)
+          && request.time < resource.data.editableUntil
+          && validSession(request.resource.data)
+          && request.resource.data.editableUntil == resource.data.editableUntil
+          && request.resource.data.groupId == resource.data.groupId
+          && request.resource.data.date == resource.data.date;
+
+        // Cancelling an unfinished session.
+        allow delete: if isAssistantOf(tid)
+          && resource.data.status == 'open'
+          && request.time < resource.data.editableUntil;
+
+        match /records/{rid} {
+          function windowOpen() {
+            return request.time < get(/databases/$(database)/documents/teachers/$(tid)/sessions/$(xid)).data.editableUntil;
+          }
+
+          function validRecord(d) {
+            return isStr(d.studentId, 1, 80)
+              && d.teacherId == tid
+              && isAttendance(d.attendance)
+              && isHomework(d.homework)
+              && (d.examScore == null || (d.examScore is number && d.examScore >= 0 && d.examScore <= 1000))
+              && isStr(d.note, 0, 500)
+              && isKind(d.kind)
+              && isOptStr(d, 'makeupForSessionId', 80)
+              && (!('newStudent' in d) || d.newStudent == null || d.newStudent is map);
+          }
+
+          allow read: if isAssistantOf(tid);
+          allow create, update: if isAssistantOf(tid) && windowOpen() && validRecord(request.resource.data);
+          allow delete: if isAssistantOf(tid) && windowOpen();
+        }
+      }
+
+      // ---------- payments ----------
+
+      match /payments/{pid} {
+        function validPayment(d) {
+          return isStr(d.studentId, 1, 80)
+            && isStr(d.groupId, 1, 80)
+            && d.month is int && d.month >= 1 && d.month <= 60
+            && d.amountEgp is int && d.amountEgp > 0 && d.amountEgp <= 100000
+            && isMethod(d.method)
+            && isIsoDate(d.paidOn);
+        }
+
+        // Same-day (Cairo) edits cannot be expressed in rules (DST), so the
+        // creator may change or remove a payment for 24 hours.
+        function withinGrace() {
+          return request.time < resource.data.createdAt + duration.value(24, 'h');
+        }
+
+        allow read: if isAssistantOf(tid);
+        allow create: if isAssistantOf(tid)
+          && validPayment(request.resource.data)
+          && request.resource.data.createdBy == request.auth.uid
+          && request.resource.data.createdAt == request.time;
+        allow update: if isAssistantOf(tid)
+          && resource.data.createdBy == request.auth.uid
+          && withinGrace()
+          && validPayment(request.resource.data);
+        allow delete: if isAssistantOf(tid)
+          && resource.data.createdBy == request.auth.uid
+          && withinGrace();
+      }
+
+      // ---------- meta ----------
+
+      match /meta/app {
+        allow read: if isAssistantOf(tid);
+        allow write: if isAssistantOf(tid)
+          && request.resource.data.keys().hasOnly(['activeSessionId', 'lastFullSyncAt'])
+          && (request.resource.data.get('activeSessionId', null) == null
+              || isStr(request.resource.data.activeSessionId, 1, 80));
+      }
+    }
+
+    // Collection-group reads of records (student profile history).
+    match /{path=**}/records/{rid} {
+      allow read: if signedIn() && profile().role == 'assistant'
+        && profile().teacherId == resource.data.teacherId;
+    }
+  }
+}
