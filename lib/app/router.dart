@@ -2,8 +2,21 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import 'package:assistant/app/route_placeholder.dart';
 import 'package:assistant/app/tabs_scaffold.dart';
+import 'package:assistant/data/app_controller.dart';
+import 'package:assistant/features/groups/group_screen.dart';
+import 'package:assistant/features/groups/groups_screen.dart';
+import 'package:assistant/features/groups/start_session_screen.dart';
+import 'package:assistant/features/history/history_screen.dart';
+import 'package:assistant/features/lock/lock_screen.dart';
+import 'package:assistant/features/payment/payment_screen.dart';
+import 'package:assistant/features/search/search_screen.dart';
+import 'package:assistant/features/session/finish_screen.dart';
+import 'package:assistant/features/session/session_screen.dart';
+import 'package:assistant/features/settings/change_pin_screen.dart';
+import 'package:assistant/features/settings/settings_screen.dart';
+import 'package:assistant/features/student/student_screen.dart';
+import 'package:assistant/features/sync/sync_screen.dart';
 
 /// Route paths from the screen table (the session screens hide the nav bar).
 abstract final class AppRoutes {
@@ -22,42 +35,106 @@ abstract final class AppRoutes {
   static const String payment = '/students/:sid/pay';
 }
 
-GoRoute _route(String path, String title, String milestone) {
-  return GoRoute(
-    path: path,
-    builder: (context, state) =>
-        RoutePlaceholder(title: title, milestone: milestone),
-  );
-}
-
-StatefulShellBranch _tab(String path, String title, String milestone) {
-  return StatefulShellBranch(routes: [_route(path, title, milestone)]);
-}
-
-/// App router; auth/lock redirect guards are added in M1.
+/// App router. Everything except the lock screen requires the PIN gate to be
+/// open for this app run; locking again (logout) returns to the lock screen.
 final routerProvider = Provider<GoRouter>((ref) {
-  return GoRouter(
+  final refresh = ValueNotifier<int>(0);
+  ref.listen<bool>(unlockedProvider, (previous, next) => refresh.value++);
+  ref.onDispose(refresh.dispose);
+
+  final router = GoRouter(
     navigatorKey: GlobalKey<NavigatorState>(debugLabel: 'root'),
     initialLocation: AppRoutes.lock,
+    refreshListenable: refresh,
+    redirect: (context, state) {
+      final unlocked = ref.read(unlockedProvider);
+      final atLock = state.matchedLocation == AppRoutes.lock;
+      if (!unlocked && !atLock) return AppRoutes.lock;
+      if (unlocked && atLock) return AppRoutes.groups;
+      return null;
+    },
     routes: [
-      _route(AppRoutes.lock, 'دخول بالـ PIN', 'M1'),
+      GoRoute(
+        path: AppRoutes.lock,
+        builder: (context, state) => const LockScreen(),
+      ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, shell) => TabsScaffold(shell: shell),
         branches: [
-          _tab(AppRoutes.groups, 'المجاميع', 'M3'),
-          _tab(AppRoutes.search, 'بحث عن طالب', 'M4'),
-          _tab(AppRoutes.history, 'سجل الحصص', 'M5'),
-          _tab(AppRoutes.settings, 'الإعدادات', 'M5'),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.groups,
+                builder: (context, state) => const GroupsScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.search,
+                builder: (context, state) => const SearchScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.history,
+                builder: (context, state) => const HistoryScreen(),
+              ),
+            ],
+          ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: AppRoutes.settings,
+                builder: (context, state) => const SettingsScreen(),
+              ),
+            ],
+          ),
         ],
       ),
-      _route(AppRoutes.group, 'تفاصيل المجموعة', 'M3'),
-      _route(AppRoutes.startSession, 'بدء حصة جديدة', 'M3'),
-      _route(AppRoutes.session, 'الحصة', 'M3'),
-      _route(AppRoutes.finishSession, 'إنهاء الحصة', 'M3'),
-      _route(AppRoutes.student, 'بروفايل الطالب', 'M4'),
-      _route(AppRoutes.payment, 'تسجيل دفعة', 'M4'),
-      _route(AppRoutes.sync, 'المزامنة', 'M5'),
-      _route(AppRoutes.changePin, 'تغيير الـ PIN', 'M1'),
+      GoRoute(
+        path: AppRoutes.changePin,
+        builder: (context, state) => const ChangePinScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.sync,
+        builder: (context, state) => const SyncScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.group,
+        builder: (context, state) =>
+            GroupScreen(groupId: state.pathParameters['gid']!),
+      ),
+      GoRoute(
+        path: AppRoutes.startSession,
+        builder: (context, state) =>
+            StartSessionScreen(groupId: state.pathParameters['gid']!),
+      ),
+      GoRoute(
+        path: AppRoutes.session,
+        builder: (context, state) =>
+            SessionScreen(xid: state.pathParameters['xid']!),
+      ),
+      GoRoute(
+        path: AppRoutes.finishSession,
+        builder: (context, state) =>
+            FinishScreen(xid: state.pathParameters['xid']!),
+      ),
+      GoRoute(
+        path: AppRoutes.student,
+        builder: (context, state) =>
+            StudentScreen(studentId: state.pathParameters['sid']!),
+      ),
+      GoRoute(
+        path: AppRoutes.payment,
+        builder: (context, state) =>
+            PaymentScreen(studentId: state.pathParameters['sid']!),
+      ),
     ],
   );
+  ref.onDispose(router.dispose);
+  return router;
 });

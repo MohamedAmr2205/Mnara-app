@@ -14,7 +14,7 @@
 ```powershell
 git clone https://github.com/MohamedAmr2205/Mnara-app.git
 cd Mnara-app
-git checkout feat/m0-scaffold
+git checkout feat/local-app
 
 flutter create --org com.mnara --project-name assistant --platforms android .
 git checkout -- .
@@ -42,5 +42,14 @@ powershell -ExecutionPolicy Bypass -File tools\check.ps1
 ```powershell
 flutter run
 ```
+
+### وضع البيانات المحلية (الحالي)
+
+التطبيق كله شغّال دلوقتي **من غير Firebase**: كل البيانات (مجاميع، طلبة، حصص، دفعات، PIN) بتتخزّن على الموبايل في `shared_preferences`، وأول تشغيل بيحمّل بيانات تجريبية (3 مجاميع × 12 طالب، 6 حصص سابقة، ودفعات).
+
+- أول مرة هيطلب منك تختار **PIN** (مفيش PIN افتراضي، و`1234` والأرقام المتكررة مرفوضة).
+- المزامنة **محاكاة**: "الرفع" بيعلّم العناصر كمتزامنة ويحوّل أكواد الطلبة المؤقتة (`N-XXXX`) لدائمة (`S1001`). في وضع debug فيه مفتاح "محاكاة قطع النت" في شاشة المزامنة.
+- بعد 10 محاولات PIN غلط القفل بيتقفل، وفيه زر "إعادة ضبط القفل (للتجربة بس)".
+- مسح بيانات التطبيق من إعدادات أندرويد بيرجّعه لبيانات تجريبية جديدة.
 
 الإعداد الكامل لـ Firebase هييجي في `docs/FIREBASE_SETUP.md` (M1 وما بعده).

@@ -1,49 +1,37 @@
 # PROGRESS — نقطة الاستئناف
 
-لما تقول "continue": اقرأ هذا الملف + `docs/SPEC_DIGEST.md` + `docs/DECISIONS.md` وكمّل من **Next action**. ماتعيدش قراءة الـ prototype ولا البرومبت كله.
+لما تقول "continue": اقرأ هذا الملف + `docs/SPEC_DIGEST.md` + `docs/DECISIONS.md` وكمّل من **Next action**.
 
 ## الحالة
 
-- **Milestone الحالي:** M0 (كتابة الكود خلصت، لسه ما اتجرّبش).
-- **Branch:** `feat/m0-scaffold` (متفرّع من `docs/m0-plan`).
-- **التحقق:** مفيش Flutter في بيئة Claude (D3) → لا `pub get` ولا `analyze` ولا `test` اتشغّلوا. كل الكود غير مجرَّب.
+- **Branch:** `feat/local-app` (متفرّع من `feat/m0-scaffold`).
+- **اللي اتكتب:** كل شاشات الـ prototype بـ Dart، شغّالة على **بيانات محلية** (`shared_preferences`) من غير Firebase.
+- **التحقق:** مفيش Flutter في بيئة Claude (D3، وتحميل الـ SDK محظور من الـ proxy) → لا `pub get` ولا `analyze` ولا `test` اتشغّلوا. كل الكود اتراجع يدويًا بس.
 
-## Checklist M0
+## الشاشات (كلها مبنية)
 
-- [x] `pubspec.yaml` (deps: riverpod, go_router, intl) و`analysis_options.yaml` صارم و`.gitignore`
-- [x] `tools/check.ps1` و`tools/check.sh`، `README.md`، `docs/FONTS.md`
-- [x] Design tokens (ألوان/مسافات/radii/نصوص)، theme داكن، motion helper (reduced-motion)
-- [x] الشعار (`MnaraLogo` بـ CustomPainter)
-- [x] Widgets: StatusChip، PrimaryButton، MnaraIconButton، BottomSheetScaffold، CodeBadge، StatTile، PinPad، PinDots، AppNavBar، OfflineStrip، EmptyState
-- [x] Routing skeleton (go_router + shell للـ 4 تابات؛ شاشات الحصة بدون nav) بـ placeholders معلَّمة بالـ milestone
-- [x] Widget tests: PinPad/PinDots، الـ widgets المشتركة، الـ router
-- [ ] **أنت:** توليد `android/` (README)، `flutter pub get`، `tools\check.ps1`، ولصق أي أخطاء
-- [ ] **أنت:** ملفات الخط (`docs/FONTS.md`)
-- [ ] مراجعة/merge الـ PR
+قفل/اختيار PIN · المجاميع (+ كارت استكمال الحصة المفتوحة + حالة "مفيش مجاميع") · تفاصيل المجموعة · بدء الحصة · الحصة (حضور/واجب/امتحان/ملاحظة، الكل حضر + تراجع، بحث) · إضافة طالب (تعويض بربط بحصة غايبها / طالب جديد بدفع) · ملاحظات وإنهاء (+ نجاح) · بحث · بروفايل الطالب · تسجيل دفعة · السجل (نافذة تعديل 10 أيام) · الإعدادات · تغيير PIN · المزامنة (محاكاة).
+
+## بنية الكود
+
+- `lib/domain/`: models + `AppState` + `logic.dart` (حالة الدفع، تغطية التعويض، نافذة التعديل، البحث، ملخصات).
+- `lib/data/`: `AppController` (Riverpod Notifier + persistence) و`seed.dart`.
+- `lib/features/<screen>/`: الشاشات.
+- `test/`: logic، controller، router، flow.
 
 ## Next action
 
-1. المستخدم يشغّل خطوات `README.md` ثم `tools\check.ps1` ويلصق الأخطاء (لو فيه). أصلّحها في M0.
-2. بعدها: `feat/m1-auth-rules` — Firebase wiring، sign-in، PIN (PBKDF2 + lockout 10)، idle lock، unlock بالباسورد، `firestore.rules` + rules tests. **أخطر حاجة الأول: الـ rules.**
+1. المستخدم يشغّل `flutter create` ثم `tools\check.ps1` (خطوات `README.md`) ويلصق أي أخطاء → أصلّحها.
+2. بعد ما يمشي: توصيل Firebase (auth، Firestore، rules + rules tests، sync حقيقي بدل المحاكاة، PBKDF2 للـ PIN، idle lock) حسب `docs/PLAN.md`.
 
 ## أسئلة مفتوحة
 
-1. موافقتك على **D2** (دفعات 24 ساعة) و**D9** (اليوم 10 مقفول، الـ rules بـ `<`)؟ (لو ما اعترضتش أعتبرها موافقة.)
+1. **D2** (دفعات 24 ساعة) و**D9** (اليوم 10 مقفول): لسه مش مطبّقين في rules لأن مفيش Firestore. في الوضع المحلي: التعديل متاح لحد 10 أيام للحصص بس، والدفعات بتتسجّل مباشرة من غير نافذة تعديل.
+2. ملفات الخط عليك (`docs/FONTS.md`).
 
-## أوامر لازم تشغّلها إنت
+## قيود الوضع المحلي (متعمّدة)
 
-```powershell
-git checkout feat/m0-scaffold
-flutter create --org com.mnara --project-name assistant --platforms android .
-git checkout -- .
-Remove-Item test\widget_test.dart
-powershell -ExecutionPolicy Bypass -File tools\check.ps1
-```
-
-لو `dart format` عدّل ملفات: `git add -A && git commit -m "style: dart format"`.
-
-## حدود معروفة
-
-- Flutter/Dart مش متاحين في workspace Claude (D3).
-- أول تشغيل ممكن يطلع أخطاء analyze/compile صغيرة (imports، lints) لأن الكود ما اتبناش.
-- ملفات الخط مش في الريبو.
+- لا idle-lock ولا ربط بحساب (Firebase Auth).
+- الـ PIN مخزّن مملّح ومتكرر الـ hash (SHA-256 × 5000) في `shared_preferences`، ده مؤقت لحد PBKDF2 + secure storage.
+- الوقت بتوقيت الجهاز (مفيش تحويل منطقة زمنية).
+- ما فيش تعديل/حذف دفعة ولا تعديل بيانات طالب.
